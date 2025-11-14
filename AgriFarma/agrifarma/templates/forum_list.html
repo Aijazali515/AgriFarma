@@ -1,0 +1,37 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Discussion Forum{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-3 af-sidebar">
+      <div class="af-card">
+        <h6>Categories</h6>
+        <ul class="list-unstyled">
+          <li><strong>Crops</strong>
+            <ul><li>Wheat</li><li>Rice</li></ul>
+          </li>
+        </ul>
+      </div>
+      <div class="af-card mt-3 d-none d-md-block">
+        <h6>Latest Discussions</h6>
+        <ul class="list-unstyled small text-muted">
+          <li>Best sowing time for wheat</li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-lg-9">
+      <div class="d-flex mb-3">
+        <input class="form-control me-2" placeholder="Search discussions..." aria-label="Search">
+        <button class="btn btn-outline-secondary"><i class="bi bi-search"></i></button>
+      </div>
+      <div class="af-card mb-2">
+        <h5>Threads</h5>
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action">Wheat pests — <small class="text-muted">Ali · 3 replies</small></a>
+          <a href="#" class="list-group-item list-group-item-action">Irrigation tips — <small class="text-muted">Sara · 1 reply</small></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

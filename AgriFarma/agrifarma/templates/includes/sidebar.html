@@ -1,0 +1,55 @@
+<nav id="af-sidebar" class="af-sidebar" role="navigation" aria-label="Sidebar" aria-hidden="true">
+  <!-- AgriFarma Logo -->
+  <a href="{{ url_for('main.index') }}" class="af-logo">
+    <div class="af-logo-icon">
+      <i class="bi bi-flower2"></i>
+    </div>
+    <span class="af-logo-text">
+      <span class="af-logo-agri">Agri</span><span class="af-logo-farma">Farma</span>
+    </span>
+  </a>
+
+  {% set ep = request.endpoint or '' %}
+  <ul class="af-nav">
+    <li class="af-nav-group-label">Navigation</li>
+    <li><a href="{{ url_for('main.index') }}" class="af-link {% if ep == 'main.index' %}active{% endif %}"><span class="af-icon bi bi-house"></span>Dashboard</a></li>
+    <li><a href="{{ url_for('forum.index') }}" class="af-link {% if ep.startswith('forum.') %}active{% endif %}"><span class="af-icon bi bi-chat-dots"></span>Forum</a></li>
+    <li><a href="{{ url_for('blog.list_posts') }}" class="af-link {% if ep.startswith('blog.') %}active{% endif %}"><span class="af-icon bi bi-journal-text"></span>Knowledge Base</a></li>
+    <li><a href="{{ url_for('consultancy.consultants') }}" class="af-link {% if ep.startswith('consultancy.') %}active{% endif %}"><span class="af-icon bi bi-people"></span>Consultancy</a></li>
+    <li><a href="{{ url_for('shop.shop_list') }}" class="af-link {% if ep.startswith('shop.') %}active{% endif %}"><span class="af-icon bi bi-basket"></span>Shop</a></li>
+    
+    {% if current_user.is_authenticated and current_user.role == 'Admin' %}
+      <div class="af-divider"></div>
+      <li class="af-nav-group-label">Administration</li>
+      <li><a href="{{ url_for('admin.dashboard') }}" class="af-link {% if ep == 'admin.dashboard' %}active{% endif %}"><span class="af-icon bi bi-speedometer2"></span>Admin Dashboard</a></li>
+      <li><a href="{{ url_for('admin.users') }}" class="af-link {% if ep == 'admin.users' %}active{% endif %}"><span class="af-icon bi bi-people-fill"></span>User Management</a></li>
+      <li><a href="{{ url_for('admin.moderation') }}" class="af-link {% if ep == 'admin.moderation' %}active{% endif %}"><span class="af-icon bi bi-shield-check"></span>Moderation</a></li>
+      <li><a href="{{ url_for('admin.reports') }}" class="af-link {% if ep == 'admin.reports' %}active{% endif %}"><span class="af-icon bi bi-graph-up"></span>Reports</a></li>
+    {% endif %}
+    
+    <div class="af-divider"></div>
+    <li class="af-nav-group-label">Support</li>
+    <li><a href="{{ url_for('main.about') }}" class="af-link {% if ep == 'main.about' %}active{% endif %}"><span class="af-icon bi bi-info-circle"></span>About Us</a></li>
+    <li><a href="{{ url_for('main.contact') }}" class="af-link {% if ep == 'main.contact' %}active{% endif %}"><span class="af-icon bi bi-envelope"></span>Contact Us</a></li>
+    <li><a href="{{ url_for('main.faq') }}" class="af-link {% if ep == 'main.faq' %}active{% endif %}"><span class="af-icon bi bi-question-circle"></span>FAQs</a></li>
+    <li><a href="{{ url_for('main.team') }}" class="af-link {% if ep == 'main.team' %}active{% endif %}"><span class="af-icon bi bi-people"></span>Our Team</a></li>
+    <li><a href="{{ url_for('main.partners') }}" class="af-link {% if ep == 'main.partners' %}active{% endif %}"><span class="af-icon bi bi-building"></span>Partners</a></li>
+    <li><a href="{{ url_for('main.feedback') }}" class="af-link {% if ep == 'main.feedback' %}active{% endif %}"><span class="af-icon bi bi-chat-left-text"></span>Feedback</a></li>
+    
+    <div class="af-divider"></div>
+    <li class="af-nav-group-label">Legal</li>
+    <li><a href="{{ url_for('main.terms') }}" class="af-link {% if ep == 'main.terms' %}active{% endif %}"><span class="af-icon bi bi-file-text"></span>Terms of Use</a></li>
+    <li><a href="{{ url_for('main.privacy') }}" class="af-link {% if ep == 'main.privacy' %}active{% endif %}"><span class="af-icon bi bi-shield-lock"></span>Privacy Policy</a></li>
+    <li><a href="{{ url_for('main.sitemap') }}" class="af-link {% if ep == 'main.sitemap' %}active{% endif %}"><span class="af-icon bi bi-diagram-3"></span>Site Map</a></li>
+    
+    <div class="af-divider"></div>
+    <li class="af-nav-group-label">Account</li>
+    {% if not current_user.is_authenticated %}
+      <li><a href="{{ url_for('auth.login') }}" class="af-link {% if ep == 'auth.login' %}active{% endif %}"><span class="af-icon bi bi-box-arrow-in-right"></span>Login</a></li>
+      <li><a href="{{ url_for('auth.register') }}" class="af-link {% if ep == 'auth.register' %}active{% endif %}"><span class="af-icon bi bi-person-plus"></span>Register</a></li>
+    {% else %}
+      <li><a href="{{ url_for('auth.profile_view', id=current_user.id) }}" class="af-link {% if ep == 'auth.profile_view' %}active{% endif %}"><span class="af-icon bi bi-person"></span>Profile</a></li>
+      <li><a href="{{ url_for('auth.logout') }}" class="af-link"><span class="af-icon bi bi-box-arrow-right"></span>Logout</a></li>
+    {% endif %}
+  </ul>
+</nav>

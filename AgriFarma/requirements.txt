@@ -1,0 +1,27 @@
+Flask>=2.3
+Werkzeug>=2.3
+Jinja2>=3.1
+
+# Core auth/forms/db
+flask-login>=0.6
+WTForms>=3.0
+Flask-WTF>=1.2
+Flask-SQLAlchemy>=3.0
+SQLAlchemy>=2.0
+email_validator>=2.0
+blinker>=1.6
+Flask-Mail>=0.9.1
+
+# Optional/used integrations
+Flask-Migrate>=4.0
+Flask-RESTX>=1.3
+Flask-Minify>=0.45
+Flask-Reuploaded>=1.0.0
+
+# Optional in production
+gunicorn>=21.2
+Faker>=19.13
+
+# Reporting / Data Analysis
+pandas>=2.2
+openpyxl>=3.1

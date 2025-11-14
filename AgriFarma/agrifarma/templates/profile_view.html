@@ -1,0 +1,251 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}{{ profile.name }} - Profile{% endblock %}
+
+{% block content %}
+<div class="af-bg-section af-overlay-dark" style="background: url('{{ url_for('static', filename='img/field-texture.jpg') }}'), linear-gradient(135deg, #2d7a3e 0%, #4a9b5a 100%); background-size: cover; background-position:center; min-height: 220px; position: relative;">
+  <div style="position: absolute; bottom: -60px; left: 50%; transform: translateX(-50%); text-align: center; z-index:2;">
+    <div class="af-profile-picture-wrapper">
+      {% if profile.display_picture %}
+        <img src="{{ url_for('static', filename='uploads/profiles/' + profile.display_picture) }}" alt="{{ profile.name }}" class="af-profile-picture">
+      {% else %}
+        <div class="af-profile-picture af-profile-placeholder">
+          <i class="bi bi-person-fill"></i>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="text-center text-white" style="position:absolute; top:40px; left:50%; transform:translateX(-50%); z-index:2;">
+    <h2 style="color:#fff; font-weight:600; letter-spacing:.5px; text-shadow:0 2px 8px rgba(0,0,0,.4);">{{ profile.name }}</h2>
+    <p class="mb-0" style="color:#f1f5f3; text-shadow:0 1px 4px rgba(0,0,0,.4); font-size:.9rem;">Member since {{ user.join_date.strftime('%B %Y') }}</p>
+  </div>
+</div>
+
+<div class="container" style="margin-top: 80px;">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Profile Header -->
+      <div class="text-center mb-4">
+        <p class="text-muted mb-2" style="font-size:.9rem;">
+          <i class="bi bi-envelope me-1"></i>{{ user.email }}
+        </p>
+        {% if user.role == 'Admin' %}
+          <span class="badge bg-danger">
+            <i class="bi bi-shield-check me-1"></i>Administrator
+          </span>
+        {% endif %}
+        <p class="text-muted small mt-2">
+          <i class="bi bi-calendar3 me-1"></i>Joined {{ user.join_date.strftime('%B %d, %Y') }}
+        </p>
+      </div>
+
+      <!-- Action Buttons -->
+      {% if current_user.is_authenticated and (current_user.id == user.id or current_user.role == 'Admin') %}
+        <div class="text-center mb-4">
+          <a href="{{ url_for('auth.profile_edit') }}" class="af-btn af-btn-primary">
+            <i class="bi bi-pencil me-1"></i>Edit Profile
+          </a>
+        </div>
+      {% endif %}
+
+      <!-- Profile Information Card -->
+      <div class="af-card mb-4">
+        <div class="af-card-header">
+          <i class="bi bi-person-badge me-2"></i>Profile Information
+        </div>
+        <div class="af-card-body">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="af-info-item">
+                <label class="af-info-label">Full Name</label>
+                <div class="af-info-value">{{ profile.name or 'Not provided' }}</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="af-info-item">
+                <label class="af-info-label">Mobile</label>
+                <div class="af-info-value">
+                  {% if profile.mobile %}
+                    <i class="bi bi-phone me-1"></i>{{ profile.mobile }}
+                  {% else %}
+                    <span class="text-muted">Not provided</span>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="af-info-item">
+                <label class="af-info-label">Profession</label>
+                <div class="af-info-value">{{ profile.profession.title() if profile.profession else 'Not specified' }}</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="af-info-item">
+                <label class="af-info-label">Expertise Level</label>
+                <div class="af-info-value">{{ profile.expertise_level.title() if profile.expertise_level else 'Not specified' }}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Location Card -->
+      {% if profile.city or profile.state or profile.country %}
+      <div class="af-card mb-4">
+        <div class="af-card-header">
+          <i class="bi bi-geo-alt me-2"></i>Location
+        </div>
+        <div class="af-card-body">
+          <div class="row g-3">
+            {% if profile.city %}
+            <div class="col-md-4">
+              <div class="af-info-item">
+                <label class="af-info-label">City</label>
+                <div class="af-info-value">{{ profile.city }}</div>
+              </div>
+            </div>
+            {% endif %}
+            {% if profile.state %}
+            <div class="col-md-4">
+              <div class="af-info-item">
+                <label class="af-info-label">State</label>
+                <div class="af-info-value">{{ profile.state }}</div>
+              </div>
+            </div>
+            {% endif %}
+            {% if profile.country %}
+            <div class="col-md-4">
+              <div class="af-info-item">
+                <label class="af-info-label">Country</label>
+                <div class="af-info-value">{{ profile.country }}</div>
+              </div>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}
+
+      <!-- Activity Stats Card -->
+      <div class="af-card">
+        <div class="af-card-header">
+          <i class="bi bi-bar-chart me-2"></i>Activity Stats
+        </div>
+        <div class="af-card-body">
+          <div class="row text-center g-3">
+            <div class="col-md-4">
+              <div class="af-stat-box">
+                <div class="af-stat-value">{{ profile.posts_count }}</div>
+                <div class="af-stat-label">Posts</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="af-stat-box">
+                <div class="af-stat-value">{{ profile.likes_count }}</div>
+                <div class="af-stat-label">Likes Received</div>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="af-stat-box">
+                <div class="af-stat-value">{{ user.role }}</div>
+                <div class="af-stat-label">Role</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recent Activity (Placeholder) -->
+      {% if profile.latest_posts %}
+      <div class="af-card mt-4">
+        <div class="af-card-header">
+          <i class="bi bi-activity me-2"></i>Recent Posts
+        </div>
+        <div class="af-card-body">
+          <ul class="list-group list-group-flush">
+            {% for post in profile.latest_posts %}
+              <li class="list-group-item">
+                <a href="#">{{ post.title }}</a>
+                <small class="text-muted d-block">{{ post.created_at.strftime('%b %d, %Y') }}</small>
+              </li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+.af-profile-picture-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.af-profile-picture {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 5px solid white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  object-fit: cover;
+  background: white;
+}
+
+.af-profile-placeholder {
+  background: linear-gradient(135deg, #2d7a3e 0%, #4a9b5a 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+
+.af-info-item {
+  margin-bottom: 0.5rem;
+}
+
+.af-info-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  color: #6c757d;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  margin-bottom: 0.25rem;
+  display: block;
+}
+
+.af-info-value {
+  font-size: 1rem;
+  color: #212529;
+  font-weight: 500;
+}
+
+.af-stat-box {
+  padding: 1rem;
+  border-radius: var(--af-radius-md);
+  background: var(--af-bg-light);
+  transition: all 0.2s ease;
+}
+
+.af-stat-box:hover {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.af-stat-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #2d7a3e;
+  margin-bottom: 0.25rem;
+}
+
+.af-stat-label {
+  font-size: 0.85rem;
+  color: #6c757d;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+</style>
+{% endblock %}

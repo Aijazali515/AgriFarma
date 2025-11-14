@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-lg-8">
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="h5 mb-0">{{ product.name }}</span>
+        <span class="badge bg-primary">{{ product.category|title }}</span>
+      </div>
+      <div class="card-body">
+        <!-- Product Image -->
+        {% if product.images %}
+        <div class="mb-3">
+          <img src="{{ url_for('static', filename='uploads/products/' + product.images.split(',')[0]) }}" 
+               alt="{{ product.name }}" 
+               class="img-fluid rounded" 
+               style="max-height: 400px; width: 100%; object-fit: cover;">
+        </div>
+        {% endif %}
+        <p class="mb-2">{{ product.description }}</p>
+        <p class="fs-4 fw-bold price mb-3">${{ '%.2f'|format(product.price) }}</p>
+        <form method="post" class="mb-2">
+          {{ add_form.hidden_tag() }}
+          <div class="input-group" style="max-width:220px;">
+            {{ add_form.quantity(class='form-control') }}
+            <button class="btn btn-primary">Add to Cart</button>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card mb-3">
+      <div class="card-header">Reviews</div>
+      <div class="card-body p-0">
+        {% for rv in reviews %}
+        <div class="p-3 border-bottom">
+          <div class="d-flex justify-content-between align-items-center mb-1">
+            <strong>{{ rv.user.email }}</strong>
+            <span class="badge bg-success">{{ rv.rating }}/5</span>
+          </div>
+          <div class="text-muted small mb-1">{{ rv.created_at.strftime('%b %d, %Y') if rv.created_at else '' }}</div>
+          <div>{{ rv.comment }}</div>
+        </div>
+        {% else %}
+        <div class="p-3 text-muted">No reviews yet.</div>
+        {% endfor %}
+        <div class="p-3">
+          <h6 class="mb-2">Write a review</h6>
+          <form method="post">
+            {{ review_form.hidden_tag() }}
+            <div class="mb-2" style="max-width:200px;">{{ review_form.rating(class='form-control', placeholder='1-5') }}</div>
+            <div class="mb-2">{{ review_form.comment(class='form-control', rows='3', placeholder='Share your experience') }}</div>
+            <button class="btn btn-outline-secondary">Submit</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-4">
+    <div class="card mb-3">
+      <div class="card-header">Related Products</div>
+      <ul class="list-group list-group-flush">
+        {% for r in related %}
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <a href="{{ url_for('shop.product_detail', product_id=r.id) }}" class="text-decoration-none text-truncate">{{ r.name }}</a>
+          <small class="text-muted">${{ '%.2f'|format(r.price) }}</small>
+        </li>
+        {% else %}
+        <li class="list-group-item text-muted">No related products.</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

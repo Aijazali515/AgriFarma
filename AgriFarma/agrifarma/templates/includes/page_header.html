@@ -1,0 +1,39 @@
+{% macro page_header(title, subtitle=None, icon=None, breadcrumbs=None, actions=None) %}
+<div class="af-page-header" role="banner">
+  <div class="af-page-header-bg"></div>
+  <div class="af-page-header-inner container-fluid">
+    <div class="af-page-header-main">
+      <div class="af-page-header-text">
+        {% if breadcrumbs %}
+          <nav class="af-breadcrumb-trail" aria-label="Breadcrumb">
+            <ol>
+              {% for bc in breadcrumbs %}
+                <li class="{{ 'active' if loop.last else '' }}">{% if not loop.last %}<a href="{{ bc.url }}">{{ bc.label }}</a>{% else %}<span>{{ bc.label }}</span>{% endif %}</li>
+              {% endfor %}
+            </ol>
+          </nav>
+        {% endif %}
+        <h1 class="af-page-title">
+          {% if icon %}<span class="af-page-title-icon"><i class="bi bi-{{ icon }}"></i></span>{% endif %}
+          <span class="af-page-title-text">{{ title }}</span>
+        </h1>
+        {% if subtitle %}
+          <p class="af-page-subtitle">{{ subtitle }}</p>
+        {% endif %}
+      </div>
+      {% if actions %}
+      <div class="af-page-header-actions">
+        {% for action in actions %}
+          <a href="{{ action.href }}" class="af-btn af-btn-{{ action.variant or 'primary' }} af-btn-sm"><i class="bi bi-{{ action.icon }} me-1"></i>{{ action.label }}</a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+    <div class="af-page-header-shapes" aria-hidden="true">
+      <div class="shape ring"></div>
+      <div class="shape dot"></div>
+      <div class="shape diamond"></div>
+    </div>
+  </div>
+</div>
+{% endmacro %}

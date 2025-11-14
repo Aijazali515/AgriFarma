@@ -1,0 +1,6 @@
+Admin login for AgriFarma:
+
+Email: admin@example.com
+Password: Pass1234!
+
+You can use these credentials to log in as an admin user.

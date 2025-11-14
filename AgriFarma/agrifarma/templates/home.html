@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% from 'includes/page_header.html' import page_header %}
+{% block content %}
+
+<!-- Modern Hero Section -->
+<section class="af-hero-modern">
+  <div class="af-hero-bg" aria-hidden="true">
+    <div class="gradient-layer"></div>
+    <div class="texture-layer"></div>
+    <div class="shapes">
+      <span class="shape s1"></span>
+      <span class="shape s2"></span>
+      <span class="shape s3"></span>
+      <span class="shape s4"></span>
+    </div>
+  </div>
+  <div class="af-hero-inner container">
+    <div class="af-hero-content">
+      <h1 class="af-hero-title"><span>Grow Smarter</span> with AgriFarma</h1>
+      <p class="af-hero-subtitle">Knowledge, community, experts & marketplace — everything to accelerate modern sustainable farming.</p>
+      <div class="af-hero-cta">
+        <a href="{{ url_for('forum.index') }}" class="af-btn af-btn-primary af-btn-lg"><i class="bi bi-chat-dots me-1"></i>Join the Community</a>
+        <a href="{{ url_for('blog.list_posts') }}" class="af-btn af-btn-outline af-btn-lg"><i class="bi bi-journal-text me-1"></i>Explore Insights</a>
+      </div>
+      <div class="af-hero-stats">
+        <div class="stat"><span class="number">1.2k+</span><span class="label">Discussions</span></div>
+        <div class="stat"><span class="number">480+</span><span class="label">Articles</span></div>
+        <div class="stat"><span class="number">95+</span><span class="label">Consultants</span></div>
+        <div class="stat"><span class="number">320+</span><span class="label">Products</span></div>
+      </div>
+    </div>
+    <div class="af-hero-media">
+      <div class="af-hero-card prime">
+        <div class="icon"><i class="bi bi-diagram-3"></i></div>
+        <h3>Knowledge Graph</h3>
+        <p>Curated, structured agricultural intelligence that evolves with the community.</p>
+      </div>
+      <div class="af-hero-card stack">
+        <div class="mini-cards">
+          <div class="mini-card"><i class="bi bi-seedling"></i><span>Soil</span></div>
+          <div class="mini-card"><i class="bi bi-cloud-sun"></i><span>Weather</span></div>
+          <div class="mini-card"><i class="bi bi-bug"></i><span>Pests</span></div>
+          <div class="mini-card"><i class="bi bi-recycle"></i><span>Sustain</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Feature Grid -->
+<section class="af-feature-grid container">
+  <div class="row g-4">
+    <div class="col-md-6 col-lg-4">
+      <div class="af-feature-item">
+        <div class="fi-icon"><i class="bi bi-chat-dots"></i></div>
+        <h3>Community Forum</h3>
+        <p>Share experiences, solve problems, and learn from progressive growers.</p>
+        <a href="{{ url_for('forum.index') }}" class="af-feature-link">Explore Forum <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="af-feature-item">
+        <div class="fi-icon"><i class="bi bi-journal-text"></i></div>
+        <h3>Knowledge Base</h3>
+        <p>Structured articles, playbooks and real-world case studies.</p>
+        <a href="{{ url_for('blog.list_posts') }}" class="af-feature-link">Read Articles <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="af-feature-item">
+        <div class="fi-icon"><i class="bi bi-people"></i></div>
+        <h3>Consultancy Access</h3>
+        <p>Connect with specialists for agronomy, finance & sustainability.</p>
+        <a href="{{ url_for('consultancy.consultants') }}" class="af-feature-link">Find Experts <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="af-feature-item">
+        <div class="fi-icon"><i class="bi bi-basket"></i></div>
+        <h3>Agri Marketplace</h3>
+        <p>Vetted supplies & tools aligned with modern cultivation standards.</p>
+        <a href="{{ url_for('shop.shop_list') }}" class="af-feature-link">Browse Products <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="af-feature-item">
+        <div class="fi-icon"><i class="bi bi-shield-check"></i></div>
+        <h3>Trust & Moderation</h3>
+        <p>Quality-first ecosystem with guided curation & anti-spam controls.</p>
+        <a href="{{ url_for('admin.dashboard') }}" class="af-feature-link">Admin Console <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+    <div class="col-md-6 col-lg-4">
+      <div class="af-feature-item">
+        <div class="fi-icon"><i class="bi bi-cpu"></i></div>
+        <h3>Data & Insights</h3>
+        <p>Future-ready architecture for agronomic analytics & automation.</p>
+        <a href="{{ url_for('main.about') }}" class="af-feature-link">Learn More <i class="bi bi-arrow-right"></i></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Secondary CTA Strip -->
+<section class="af-cta-strip">
+  <div class="container">
+    <div class="af-cta-strip-inner">
+      <h3>Ready to transform your agriculture journey?</h3>
+      <div class="actions">
+        <a href="{{ url_for('auth.register') }}" class="af-btn af-btn-primary"><i class="bi bi-person-plus me-1"></i>Create Account</a>
+        <a href="{{ url_for('main.contact') }}" class="af-btn af-btn-outline"><i class="bi bi-envelope me-1"></i>Contact Us</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

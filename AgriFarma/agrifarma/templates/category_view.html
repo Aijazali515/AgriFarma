@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="af-forum-section container py-4">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+        <h1 class="h3 mb-0 af-forum-heading"><i class="bi bi-folder2-open me-2"></i>{{ category.name }}</h1>
+        <a class="btn btn-primary" href="{{ url_for('forum.new_thread') }}"><i class="bi bi-plus-circle me-1"></i>New Thread</a>
+      </div>
+      {% if category.children %}
+      <div class="mb-3">
+        <h6 class="mb-2">Subcategories</h6>
+        <div class="d-flex flex-wrap gap-2">
+          {% for sub in category.children %}
+            <a href="{{ url_for('forum.category_view', category_id=sub.id) }}" class="btn btn-sm btn-outline-secondary">{{ sub.name }} <span class="badge bg-light text-muted ms-1">{{ sub.threads|length }}</span></a>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% for thread in threads %}
+      <div class="af-thread-card card mb-3">
+        <div class="card-body">
+          <h5 class="card-title mb-1"><a href="{{ url_for('forum.thread_view', thread_id=thread.id) }}" class="af-thread-link">{{ thread.title }}</a></h5>
+          <div class="af-thread-meta small">By {{ thread.author.email }} · {{ thread.created_at.strftime('%b %d, %Y') }}</div>
+        </div>
+      </div>
+      {% else %}
+        <div class="af-empty-state text-center py-5">
+          <div class="af-empty-icon mb-3"><i class="bi bi-chat-dots"></i></div>
+          <p class="text-muted mb-3">No threads yet. Start the first discussion!</p>
+          <a class="btn btn-outline-primary" href="{{ url_for('forum.new_thread') }}">Create Thread</a>
+        </div>
+      {% endfor %}
+
+      {% if pagination and pagination.pages > 1 %}
+      <nav aria-label="Thread pagination" class="mt-4">
+        <ul class="pagination pagination-sm">
+          {% if pagination.has_prev %}
+          <li class="page-item"><a class="page-link" href="?page={{ pagination.prev_num }}">Prev</a></li>
+          {% endif %}
+          {% for p in range(1, pagination.pages + 1) %}
+          <li class="page-item {% if p==pagination.page %}active{% endif %}"><a class="page-link" href="?page={{ p }}">{{ p }}</a></li>
+          {% endfor %}
+          {% if pagination.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ pagination.next_num }}">Next</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+      {% endif %}
+    </div>
+
+    <div class="col-lg-4">
+      {% include 'includes/forum_sidebar.html' %}
+    </div>
+  </div>
+</section>
+{% endblock %}

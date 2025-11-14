@@ -1,0 +1,104 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Contact Us - AgriFarma{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow-soft">
+        <div class="card-header">
+          <h1 class="mb-0"><i class="bi bi-envelope me-2"></i>Contact Us</h1>
+        </div>
+        <div class="card-body">
+          <p class="lead">
+            Have questions or need assistance? We're here to help! Reach out to us through any of the methods below.
+          </p>
+
+          <div class="row g-4 mb-4">
+            <div class="col-md-6">
+              <div class="p-3 border rounded">
+                <i class="bi bi-envelope-fill text-primary" style="font-size: 2rem;"></i>
+                <h3 class="h5 mt-2">Email</h3>
+                <p class="text-muted mb-1">General Inquiries:</p>
+                <a href="mailto:info@agrifarma.com">info@agrifarma.com</a>
+                <p class="text-muted mb-1 mt-2">Support:</p>
+                <a href="mailto:support@agrifarma.com">support@agrifarma.com</a>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 border rounded">
+                <i class="bi bi-telephone-fill text-primary" style="font-size: 2rem;"></i>
+                <h3 class="h5 mt-2">Phone</h3>
+                <p class="text-muted mb-1">Customer Service:</p>
+                <a href="tel:+1234567890">+1 (234) 567-890</a>
+                <p class="text-muted mb-1 mt-2">Technical Support:</p>
+                <a href="tel:+1234567891">+1 (234) 567-891</a>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 border rounded">
+                <i class="bi bi-geo-alt-fill text-primary" style="font-size: 2rem;"></i>
+                <h3 class="h5 mt-2">Address</h3>
+                <address class="mb-0">
+                  AgriFarma Headquarters<br>
+                  123 Agricultural Lane<br>
+                  Farming District, AG 12345<br>
+                  Country
+                </address>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="p-3 border rounded">
+                <i class="bi bi-clock-fill text-primary" style="font-size: 2rem;"></i>
+                <h3 class="h5 mt-2">Business Hours</h3>
+                <p class="mb-1"><strong>Monday - Friday:</strong><br>9:00 AM - 6:00 PM</p>
+                <p class="mb-0"><strong>Saturday:</strong><br>10:00 AM - 4:00 PM</p>
+              </div>
+            </div>
+          </div>
+
+          <hr class="hr-light my-4">
+
+          <h2 class="h4 mb-3">Send Us a Message</h2>
+          <form action="#" method="post" class="needs-validation" novalidate>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label for="name" class="form-label">Your Name *</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+                <div class="invalid-feedback">Please provide your name.</div>
+              </div>
+              <div class="col-md-6">
+                <label for="email" class="form-label">Your Email *</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+                <div class="invalid-feedback">Please provide a valid email.</div>
+              </div>
+              <div class="col-12">
+                <label for="subject" class="form-label">Subject *</label>
+                <input type="text" class="form-control" id="subject" name="subject" required>
+                <div class="invalid-feedback">Please provide a subject.</div>
+              </div>
+              <div class="col-12">
+                <label for="message" class="form-label">Message *</label>
+                <textarea class="form-control" id="message" name="message" rows="5" required></textarea>
+                <div class="invalid-feedback">Please provide a message.</div>
+              </div>
+              <div class="col-12">
+                <button type="submit" class="af-btn af-btn-primary">
+                  <i class="bi bi-send me-2"></i>Send Message
+                </button>
+              </div>
+            </div>
+          </form>
+
+          <div class="alert alert-info mt-4">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Quick Answers:</strong> Check our <a href="{{ url_for('main.faq') }}" class="alert-link">FAQ page</a> 
+            for immediate answers to common questions.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

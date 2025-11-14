@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-8">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        {% from 'includes/avatar.html' import avatar %}
+        <div class="d-flex align-items-center">
+          {{ avatar(user, 96) }}
+          <div>
+            <h3 class="mb-0">{{ profile.name }}</h3>
+            <div class="text-muted">{{ user.email }} · Joined {{ user.join_date.strftime('%b %d, %Y') }}</div>
+            <div class="text-muted">Role: {{ user.role }}</div>
+          </div>
+        </div>
+        <hr>
+        <div class="row text-center">
+          <div class="col"><div class="h4 mb-0">{{ profile.posts_count }}</div><div class="text-muted">Posts</div></div>
+          <div class="col"><div class="h4 mb-0">{{ profile.likes_count }}</div><div class="text-muted">Likes</div></div>
+        </div>
+        <hr>
+        <h5>Latest Posts</h5>
+        {% if profile.latest_posts %}
+          <ul>
+            {% for p in profile.latest_posts %}
+              <li><a href="#">{{ p.title }}</a></li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p class="text-muted">No posts yet.</p>
+        {% endif %}
+        <div class="mt-3">
+          {% if current_user.is_authenticated and (current_user.id == user.id or current_user.role == 'Admin') %}
+            <a href="{{ url_for('auth.profile_edit') }}" class="btn btn-outline-primary">Edit Profile</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

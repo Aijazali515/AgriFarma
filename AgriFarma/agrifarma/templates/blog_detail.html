@@ -1,0 +1,181 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}{{ post.title }} · Blog{% endblock %}
+{% block breadcrumb %}
+  <a href="{{ url_for('main.index') }}" class="af-breadcrumb-home"><i class="bi bi-house-door-fill"></i><span class="visually-hidden">Home</span></a>
+  <i class="bi bi-chevron-right separator" aria-hidden="true"></i>
+  <a href="{{ url_for('blog.list_posts') }}">Blog</a>
+  <i class="bi bi-chevron-right separator" aria-hidden="true"></i>
+  <span class="current">{{ post.title }}</span>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Header -->
+<section class="af-hero af-hero-cover af-overlay-dark" style="background-image:url('{{ url_for('static', filename='uploads/blog/' + (post.media_files.split(',')[0] if post.media_files else 'article_1.jpg')) }}');min-height:45vh;display:flex;align-items:center;">
+  <div class="container af-hero-inner py-4">
+    <div class="row">
+      <div class="col-lg-9">
+        <h1 class="af-hero-title mb-3" style="font-size:clamp(2rem,4.5vw,3rem);">{{ post.title }}</h1>
+        <div class="af-meta mb-2">
+          <span class="af-meta-item"><i class="bi bi-folder2"></i> {{ post.category }}</span>
+          <span class="af-meta-item"><i class="bi bi-calendar-event"></i> {{ post.created_at.strftime('%b %d, %Y') }}</span>
+          <span class="af-meta-item"><i class="bi bi-person"></i> {{ post.author.email }}</span>
+          {% if post.tags %}<span class="af-meta-item"><i class="bi bi-tags"></i> {{ post.tags }}</span>{% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="container af-mt-lg">
+  <div class="row">
+    <div class="col-lg-8">
+      <!-- Post Content Card -->
+      <div class="card mb-4" data-elevated="true">
+        <div class="card-body">
+          <div class="post-content mb-4">{{ post.content|safe }}</div>
+            <div class="mb-3">
+              {% set like_count = post.likes|length %}
+              {% set user_liked = current_user.is_authenticated and post.likes|selectattr('user_id', 'equalto', current_user.id)|list|length > 0 %}
+              {% if current_user.is_authenticated %}
+              <form method="POST" action="{{ url_for('blog.toggle_like_blog', post_id=post.id) }}" class="d-inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <button type="submit" class="btn btn-outline-primary">
+                  <i class="bi bi-heart{{ '-fill' if user_liked else '' }} me-1"></i>{{ 'Unlike' if user_liked else 'Like' }} ({{ like_count }})
+                </button>
+              </form>
+              {% else %}
+              <button class="btn btn-outline-secondary" disabled><i class="bi bi-heart me-1"></i>{{ like_count }} likes</button>
+              {% endif %}
+            </div>
+          {% set media_items = post.media_items() %}
+          {% if media_items %}
+          <div class="af-attachments mb-4">
+            <h6 class="text-uppercase small fw-bold mb-2"><i class="bi bi-paperclip me-1"></i>Media</h6>
+            
+            {# Image gallery #}
+            {% set images = media_items|selectattr('kind','equalto','image')|list %}
+            {% if images %}
+            <div class="row g-3 mb-3">
+              {% for m in images %}
+              <div class="col-6 col-md-4">
+                <a href="{{ url_for('media.serve_media', filename=m.filename) }}" target="_blank" class="d-block border rounded overflow-hidden">
+                  <img src="{{ url_for('media.serve_media', filename=m.filename) }}" alt="{{ m.filename }}" class="img-fluid"/>
+                </a>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            {# Videos #}
+            {% set videos = media_items|selectattr('kind','equalto','video')|list %}
+            {% if videos %}
+            <div class="mb-3">
+              {% for m in videos %}
+              <div class="ratio ratio-16x9 mb-3">
+                <video controls preload="metadata">
+                  <source src="{{ url_for('media.serve_media', filename=m.filename) }}" type="video/{{ m.ext[1:] }}">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              {% endfor %}
+            </div>
+            {% endif %}
+
+            {# Documents and other files #}
+            {% set docs = media_items|rejectattr('kind','equalto','image')|rejectattr('kind','equalto','video')|list %}
+            {% if docs %}
+            <ul class="list-unstyled small mb-0 af-meta">
+              {% for m in docs %}
+                {% set icon = 'file-earmark-text' %}
+                {% if m.ext in ['.pdf'] %}{% set icon = 'filetype-pdf' %}{% endif %}
+                {% if m.ext in ['.ppt','.pptx'] %}{% set icon = 'filetype-ppt' %}{% endif %}
+                {% if m.ext in ['.doc','.docx'] %}{% set icon = 'filetype-doc' %}{% endif %}
+                {% if m.ext in ['.xls','.xlsx','.csv'] %}{% set icon = 'filetype-xls' %}{% endif %}
+                <li class="af-meta-item">
+                  <i class="bi bi-{{ icon }} me-1"></i>
+                  <a href="{{ url_for('media.serve_media', filename=m.filename) }}" target="_blank" class="text-decoration-none">{{ m.filename }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          {% endif %}
+        </div>
+        {% if current_user.is_authenticated and current_user.role == 'Admin' %}
+        <div class="card-footer d-flex flex-wrap gap-2">
+          {% if not post.approved %}
+          <form method="POST" action="{{ url_for('blog.approve_post', post_id=post.id) }}" class="m-0">
+            {{ form.csrf_token }}
+            <button class="btn btn-success btn-sm"><i class="bi bi-check-circle me-1"></i>Approve</button>
+          </form>
+          {% endif %}
+          <form method="POST" action="{{ url_for('blog.delete_post', post_id=post.id) }}" class="m-0">
+            {{ form.csrf_token }}
+            <button class="btn btn-danger btn-sm"><i class="bi bi-trash me-1"></i>Delete Post</button>
+          </form>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Comments Card -->
+      <div class="card mb-5">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <span class="fw-semibold"><i class="bi bi-chat-dots me-1"></i>Comments</span>
+          {% if current_user.is_authenticated %}<a href="#comment-form" class="small text-decoration-none"><i class="bi bi-plus-circle me-1"></i>Add Comment</a>{% endif %}
+        </div>
+        <div class="card-body p-0">
+          {% for c in comments %}
+          <div class="p-3 border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="fw-bold">{{ c.author.email }}</div>
+              <div class="text-muted small">{{ c.created_at.strftime('%b %d, %Y %H:%M') }}</div>
+            </div>
+            <p class="mb-2 mt-2">{{ c.content }}</p>
+            {% if current_user.is_authenticated and current_user.role == 'Admin' %}
+            <form method="POST" action="{{ url_for('blog.delete_comment', comment_id=c.id) }}" class="mt-1">
+              {{ form.csrf_token }}
+              <button class="btn btn-outline-danger btn-sm" type="submit"><i class="bi bi-x-circle me-1"></i>Delete</button>
+            </form>
+            {% endif %}
+          </div>
+          {% else %}
+          <div class="p-3 text-muted">No comments yet.</div>
+          {% endfor %}
+          <div class="p-3" id="comment-form">
+            {% if current_user.is_authenticated %}
+            <form method="POST" class="mt-1" novalidate>
+              {{ form.hidden_tag() }}
+              <div class="mb-2">{{ form.content(class_='form-control', rows=3, placeholder='Share your thoughts...') }}{% for e in form.content.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+              <div>{{ form.submit(class_='btn btn-primary btn-sm') }}</div>
+            </form>
+            {% else %}
+            <p class="mb-0">Please <a href="{{ url_for('auth.login') }}">login</a> to comment.</p>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+      <div class="card mb-4">
+        <div class="card-header"><i class="bi bi-clock-history me-1"></i>Latest</div>
+        <ul class="list-group list-group-flush">
+          {% for p in latest_blog_posts %}
+          <li class="list-group-item"><a href="{{ url_for('blog.detail', post_id=p.id) }}" class="text-decoration-none">{{ p.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+      <div class="card mb-4">
+        <div class="card-header"><i class="bi bi-fire me-1"></i>Trending</div>
+        <ul class="list-group list-group-flush">
+          {% for p in trending_blog_posts %}
+          <li class="list-group-item"><a href="{{ url_for('blog.detail', post_id=p.id) }}" class="text-decoration-none">{{ p.title }}</a></li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

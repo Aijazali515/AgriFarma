@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h2>User Management</h2>
+  <form class="row g-2 mb-3" method="get">
+    <div class="col-auto"><input class="form-control" name="q" placeholder="Search email" value="{{ search_query }}"></div>
+    <div class="col-auto"><button class="btn btn-outline-secondary">Search</button></div>
+  </form>
+  <table class="table table-sm table-striped">
+    <thead><tr><th>Email</th><th>Role</th><th>Joined</th><th>Active</th><th>Action</th></tr></thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td>{{ u.email }}</td>
+        <td>{{ u.role }}</td>
+        <td>{{ u.join_date.strftime('%Y-%m-%d') }}</td>
+        <td>{% if u.is_active %}<span class="badge bg-success">Yes</span>{% else %}<span class="badge bg-danger">No</span>{% endif %}</td>
+        <td>
+          <form method="post" class="d-inline">
+            <input type="hidden" name="user_id" value="{{ u.id }}">
+            {% if u.is_active %}
+            <input type="hidden" name="action" value="deactivate">
+            <button class="btn btn-sm btn-warning">Deactivate</button>
+            {% else %}
+            <input type="hidden" name="action" value="activate">
+            <button class="btn btn-sm btn-success">Activate</button>
+            {% endif %}
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

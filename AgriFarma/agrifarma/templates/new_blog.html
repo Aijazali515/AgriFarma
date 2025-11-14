@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-9">
+    <div class="card">
+      <div class="card-body">
+        <h4>Create Blog Post</h4>
+        <form method="POST" enctype="multipart/form-data" novalidate>
+          {{ form.hidden_tag() }}
+          <div class="mb-3">{{ form.title.label(class_='form-label') }} {{ form.title(class_='form-control') }}{% for e in form.title.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+          <div class="mb-3">{{ form.category.label(class_='form-label') }} {{ form.category(class_='form-select') }}{% for e in form.category.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+          <div class="mb-3">{{ form.tags.label(class_='form-label') }} {{ form.tags(class_='form-control') }}{% for e in form.tags.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+          <div class="mb-3">{{ form.content.label(class_='form-label') }} {{ form.content(class_='form-control', rows=8) }}{% for e in form.content.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+          <div class="mb-3">{{ form.media_files.label(class_='form-label') }} {{ form.media_files(class_='form-control', multiple=true) }}{% for e in form.media_files.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+          <div class="d-grid">{{ form.submit(class_='btn btn-primary') }}</div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

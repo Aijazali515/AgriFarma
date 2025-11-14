@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% block title %}Shop{% endblock %}
+{% block breadcrumb %}
+  <a href="{{ url_for('main.index') }}" class="af-breadcrumb-home"><i class="bi bi-house-door-fill"></i><span class="visually-hidden">Home</span></a>
+  <i class="bi bi-chevron-right separator" aria-hidden="true"></i>
+  <span class="current">Shop</span>
+{% endblock %}
+{% block content %}
+
+<!-- Modern Shop Hero -->
+<section class="af-shop-hero af-hero-cover af-overlay-dark" style="background-image: url('{{ url_for('static', filename='img/backgrounds/shop_bg.jpg') }}');">
+  <div class="container af-hero-inner py-4">
+    <div class="row align-items-center">
+      <div class="col-lg-6">
+        <h1 class="display-5 fw-bold af-shop-title">Agri Marketplace</h1>
+        <p class="lead af-shop-subtitle">Vetted agricultural supplies & tools for modern farming</p>
+      </div>
+      <div class="col-lg-6">
+        <!-- Search & Filter Panel -->
+        <div class="af-shop-filter-panel">
+          <form method="get" action="{{ url_for('shop.shop_list') }}" class="af-filter-form">
+            <div class="row g-2">
+              <div class="col-12">
+                <div class="input-group">
+                  <input type="text" name="q" class="form-control" value="{{ search_query or '' }}" placeholder="Search products..." aria-label="Search">
+                  <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i></button>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <select name="category" class="form-select">
+                  <option value="">All Categories</option>
+                  <option value="seeds" {% if selected_category=='seeds' %}selected{% endif %}>Seeds</option>
+                  <option value="fertilizers" {% if selected_category=='fertilizers' %}selected{% endif %}>Fertilizers</option>
+                  <option value="pesticides" {% if selected_category=='pesticides' %}selected{% endif %}>Pesticides</option>
+                  <option value="equipment" {% if selected_category=='equipment' %}selected{% endif %}>Equipment</option>
+                  <option value="bio" {% if selected_category=='bio' %}selected{% endif %}>Bio Products</option>
+                  <option value="other" {% if selected_category=='other' %}selected{% endif %}>Other</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <select name="sort" class="form-select">
+                  <option value="name" {% if sort=='name' %}selected{% endif %}>Sort by Name</option>
+                  <option value="price" {% if sort=='price' %}selected{% endif %}>Sort by Price</option>
+                  <option value="new" {% if sort=='new' %}selected{% endif %}>Newest First</option>
+                  <option value="featured" {% if sort=='featured' %}selected{% endif %}>Featured</option>
+                </select>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Featured Products -->
+{% if featured %}
+<section class="container py-4">
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0"><i class="bi bi-star-fill text-warning me-2"></i>Featured Products</h2>
+  </div>
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    {% for p in featured %}
+    <div class="col">
+      <div class="af-product-card-wrapper position-relative">
+        <a href="{{ url_for('shop.product_detail', product_id=p.id) }}" class="af-product-card text-decoration-none">
+          <div class="af-product-badge">Featured</div>
+          <div class="af-product-img" style="background-image: url('{{ url_for('static', filename='uploads/products/' + (p.images.split(',')[0] if p.images else 'product_1.jpg')) }}');"></div>
+          <div class="af-product-body">
+            <h3 class="af-product-title">{{ p.name }}</h3>
+            <p class="af-product-category"><i class="bi bi-tag"></i> {{ p.category|title }}</p>
+            <div class="af-product-footer">
+              <span class="af-product-price">${{ '%.2f'|format(p.price) }}</span>
+              <span class="af-product-cta">View <i class="bi bi-arrow-right"></i></span>
+            </div>
+          </div>
+        </a>
+        {% if current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('shop.quick_add_to_cart', product_id=p.id) }}" class="af-quick-cart-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="btn btn-sm btn-success af-quick-cart-btn" title="Add to Cart">
+            <i class="bi bi-cart-plus"></i>
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- All Products -->
+<section class="container py-4">
+  {% if products %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h4 mb-0">All Products</h2>
+    <span class="text-muted small">{{ pagination.total if pagination else products|length }} items</span>
+  </div>
+  
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-3">
+    {% for p in products %}
+    <div class="col">
+      <div class="af-product-card-wrapper position-relative">
+        <a href="{{ url_for('shop.product_detail', product_id=p.id) }}" class="af-product-card text-decoration-none">
+          <div class="af-product-img" style="background-image: url('{{ url_for('static', filename='uploads/products/' + (p.images.split(',')[0] if p.images else 'product_1.jpg')) }}');"></div>
+          <div class="af-product-body">
+            <h3 class="af-product-title">{{ p.name }}</h3>
+            <p class="af-product-category"><i class="bi bi-tag"></i> {{ p.category|title }}</p>
+            <div class="af-product-footer">
+              <span class="af-product-price">${{ '%.2f'|format(p.price) }}</span>
+              <span class="af-product-cta">Details <i class="bi bi-arrow-right"></i></span>
+            </div>
+          </div>
+        </a>
+        {% if current_user.is_authenticated %}
+        <form method="post" action="{{ url_for('shop.quick_add_to_cart', product_id=p.id) }}" class="af-quick-cart-form">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <input type="hidden" name="quantity" value="1">
+          <button type="submit" class="btn btn-sm btn-success af-quick-cart-btn" title="Add to Cart">
+            <i class="bi bi-cart-plus"></i>
+          </button>
+        </form>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if pagination and pagination.pages > 1 %}
+  <nav aria-label="Product pagination" class="mt-4">
+    <ul class="pagination pagination-sm justify-content-center">
+      {% if pagination.has_prev %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ pagination.prev_num }}&sort={{ sort }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">
+          <i class="bi bi-chevron-left"></i> Prev
+        </a>
+      </li>
+      {% endif %}
+      
+      {% for pnum in range(1, pagination.pages + 1) %}
+      <li class="page-item {% if pnum==pagination.page %}active{% endif %}">
+        <a class="page-link" href="?page={{ pnum }}&sort={{ sort }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">{{ pnum }}</a>
+      </li>
+      {% endfor %}
+      
+      {% if pagination.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ pagination.next_num }}&sort={{ sort }}{% if selected_category %}&category={{ selected_category }}{% endif %}{% if search_query %}&q={{ search_query }}{% endif %}">
+          Next <i class="bi bi-chevron-right"></i>
+        </a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+  
+  {% else %}
+  <div class="af-empty-state text-center py-5">
+    <i class="bi bi-inbox af-empty-icon"></i>
+    <h3>No products found</h3>
+    <p class="text-muted">Try adjusting your filters or search terms</p>
+    <a href="{{ url_for('shop.shop_list') }}" class="af-btn af-btn-primary">Clear Filters</a>
+  </div>
+  {% endif %}
+</section>
+
+{% endblock %}

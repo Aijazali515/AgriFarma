@@ -1,0 +1,76 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<section class="af-hero">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-7">
+        <div class="overlay">
+          <h1 class="display-5">AgriFarma — Farmers’ Digital Hub of Sindh</h1>
+          <p class="lead">A community for farmers, consultants, academics and traders to share knowledge, access services, and grow together.</p>
+          <div class="af-cta d-flex gap-2 mt-3">
+            <a href="{{ url_for('auth.register') }}" class="btn btn-lg btn-af">Join</a>
+            <a href="{{ url_for('main.index') }}" class="btn btn-lg btn-af-outline">Explore</a>
+            <a href="{{ url_for('blog.list_posts') }}" class="btn btn-lg btn-outline-secondary">Learn</a>
+          </div>
+          <div class="mt-4">
+            <small class="text-muted">Role quick sign-ins:</small>
+            <div class="d-flex gap-2 mt-2">
+              <a href="{{ url_for('auth.login') }}?role=Farmer" class="btn btn-sm btn-light">Farmer</a>
+              <a href="{{ url_for('auth.login') }}?role=Consultant" class="btn btn-sm btn-light">Consultant</a>
+              <a href="{{ url_for('auth.login') }}?role=Admin" class="btn btn-sm btn-light">Admin</a>
+              <a href="{{ url_for('auth.login') }}?role=Academic" class="btn btn-sm btn-light">Academic</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-5 d-none d-lg-block">
+        <div id="homeCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item active">
+              <img src="{{ url_for('static', filename='img/backgrounds/success1.jpg') }}" class="d-block w-100 rounded" alt="Success 1">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='img/backgrounds/success2.jpg') }}" class="d-block w-100 rounded" alt="Success 2">
+            </div>
+            <div class="carousel-item">
+              <img src="{{ url_for('static', filename='img/backgrounds/success3.jpg') }}" class="d-block w-100 rounded" alt="Success 3">
+            </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container mt-5">
+  <div class="row">
+    <div class="col-md-4">
+      <div class="af-card">
+        <h5>Latest Discussions</h5>
+        <p class="text-muted-small">Recent forum activity from your region.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="af-card">
+        <h5>Marketplace Highlights</h5>
+        <p class="text-muted-small">Top products and deals today.</p>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="af-card">
+        <h5>Consultant Suggestions</h5>
+        <p class="text-muted-small">Experts recommended for your crops.</p>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

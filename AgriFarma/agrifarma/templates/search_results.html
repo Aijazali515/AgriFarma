@@ -1,0 +1,280 @@
+{% extends "layouts/base.html" %}
+
+{% block title %}Search Results - {{ results.query }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <!-- Search Header -->
+            <div class="af-search-header mb-4">
+                <h1 class="h3 mb-3">
+                    <i class="bi bi-search"></i>
+                    Search Results
+                    {% if results.query %}
+                        for "{{ results.query }}"
+                    {% endif %}
+                </h1>
+                
+                <!-- Search Form -->
+                <form method="get" action="{{ url_for('search.global_search') }}" class="af-search-form mb-4">
+                    <div class="input-group input-group-lg">
+                        <input type="text" 
+                               name="q" 
+                               class="form-control" 
+                               placeholder="Search across AgriFarma..." 
+                               value="{{ results.query }}"
+                               autofocus
+                               required>
+                        <button class="btn btn-primary" type="submit">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Filter Tabs -->
+                <ul class="nav nav-pills mb-3">
+                    <li class="nav-item">
+                        <a class="nav-link {% if results.module == 'all' %}active{% endif %}" 
+                           href="{{ url_for('search.global_search', q=results.query, module='all') }}">
+                            All Results ({{ results.total }})
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if results.module == 'forum' %}active{% endif %}" 
+                           href="{{ url_for('search.global_search', q=results.query, module='forum') }}">
+                            Forum ({{ results.forum|length }})
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if results.module == 'blog' %}active{% endif %}" 
+                           href="{{ url_for('search.global_search', q=results.query, module='blog') }}">
+                            Blog ({{ results.blog|length }})
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if results.module == 'shop' %}active{% endif %}" 
+                           href="{{ url_for('search.global_search', q=results.query, module='shop') }}">
+                            Shop ({{ results.shop|length }})
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if results.module == 'consultants' %}active{% endif %}" 
+                           href="{{ url_for('search.global_search', q=results.query, module='consultants') }}">
+                            Consultants ({{ results.consultants|length }})
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            
+            {% if not results.query or results.query|length < 2 %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle"></i>
+                    Please enter at least 2 characters to search.
+                </div>
+            {% elif results.total == 0 %}
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle"></i>
+                    No results found for "{{ results.query }}". Try different keywords.
+                </div>
+            {% else %}
+                <!-- Forum Results -->
+                {% if results.forum and (results.module == 'all' or results.module == 'forum') %}
+                <div class="af-search-section mb-5">
+                    <h2 class="h4 mb-3">
+                        <i class="bi bi-chat-dots text-primary"></i>
+                        Forum Discussions
+                        {% if results.module == 'all' %}
+                            <a href="{{ url_for('search.global_search', q=results.query, module='forum') }}" 
+                               class="btn btn-sm btn-outline-primary ms-2">View All</a>
+                        {% endif %}
+                    </h2>
+                    <div class="row g-3">
+                        {% for thread in results.forum %}
+                        <div class="col-12">
+                            <div class="card af-card-hover">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ url_for('forum.thread_view', thread_id=thread.id) }}">
+                                            {{ thread.title }}
+                                        </a>
+                                    </h5>
+                                    <p class="card-text text-muted">{{ thread.body }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="bi bi-person"></i> {{ thread.author }}
+                                            <span class="mx-2">•</span>
+                                            <i class="bi bi-folder"></i> {{ thread.category }}
+                                            <span class="mx-2">•</span>
+                                            <i class="bi bi-chat"></i> {{ thread.replies }} replies
+                                        </small>
+                                        <small class="text-muted">
+                                            {{ thread.created_at.strftime('%b %d, %Y') }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Blog Results -->
+                {% if results.blog and (results.module == 'all' or results.module == 'blog') %}
+                <div class="af-search-section mb-5">
+                    <h2 class="h4 mb-3">
+                        <i class="bi bi-journal-text text-success"></i>
+                        Blog Articles
+                        {% if results.module == 'all' %}
+                            <a href="{{ url_for('search.global_search', q=results.query, module='blog') }}" 
+                               class="btn btn-sm btn-outline-success ms-2">View All</a>
+                        {% endif %}
+                    </h2>
+                    <div class="row g-3">
+                        {% for post in results.blog %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card af-card-hover h-100">
+                                {% if post.image %}
+                                <img src="{{ url_for('static', filename='uploads/' + post.image) }}" 
+                                     class="card-img-top" 
+                                     alt="{{ post.title }}"
+                                     style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ url_for('blog.detail', post_id=post.id) }}">
+                                            {{ post.title }}
+                                        </a>
+                                    </h5>
+                                    <p class="card-text text-muted">{{ post.content }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="badge bg-success">{{ post.category }}</span>
+                                        <small class="text-muted">
+                                            {{ post.created_at.strftime('%b %d') }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Shop Results -->
+                {% if results.shop and (results.module == 'all' or results.module == 'shop') %}
+                <div class="af-search-section mb-5">
+                    <h2 class="h4 mb-3">
+                        <i class="bi bi-basket text-warning"></i>
+                        Products
+                        {% if results.module == 'all' %}
+                            <a href="{{ url_for('search.global_search', q=results.query, module='shop') }}" 
+                               class="btn btn-sm btn-outline-warning ms-2">View All</a>
+                        {% endif %}
+                    </h2>
+                    <div class="row g-3">
+                        {% for product in results.shop %}
+                        <div class="col-md-6 col-lg-3">
+                            <div class="card af-card-hover h-100">
+                                {% if product.image %}
+                                <img src="{{ url_for('static', filename='uploads/' + product.image) }}" 
+                                     class="card-img-top" 
+                                     alt="{{ product.name }}"
+                                     style="height: 200px; object-fit: cover;">
+                                {% endif %}
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ url_for('shop.product_detail', product_id=product.id) }}">
+                                            {{ product.name }}
+                                        </a>
+                                    </h5>
+                                    <p class="card-text text-muted small">{{ product.description }}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <span class="h5 mb-0 text-primary">Rs. {{ product.price }}</span>
+                                        {% if product.inventory > 0 %}
+                                            <span class="badge bg-success">In Stock</span>
+                                        {% else %}
+                                            <span class="badge bg-danger">Out of Stock</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Consultant Results -->
+                {% if results.consultants and (results.module == 'all' or results.module == 'consultants') %}
+                <div class="af-search-section mb-5">
+                    <h2 class="h4 mb-3">
+                        <i class="bi bi-people text-info"></i>
+                        Consultants
+                        {% if results.module == 'all' %}
+                            <a href="{{ url_for('search.global_search', q=results.query, module='consultants') }}" 
+                               class="btn btn-sm btn-outline-info ms-2">View All</a>
+                        {% endif %}
+                    </h2>
+                    <div class="row g-3">
+                        {% for consultant in results.consultants %}
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card af-card-hover h-100">
+                                <div class="card-body">
+                                    <h5 class="card-title">
+                                        <a href="{{ url_for('consultancy.consultant_profile', consultant_id=consultant.id) }}">
+                                            {{ consultant.name }}
+                                        </a>
+                                    </h5>
+                                    <p class="card-text text-muted">{{ consultant.bio }}</p>
+                                    <div class="mb-2">
+                                        <span class="badge bg-info">{{ consultant.category }}</span>
+                                        <span class="badge bg-secondary">{{ consultant.expertise }}</span>
+                                    </div>
+                                    <small class="text-muted">
+                                        <i class="bi bi-envelope"></i> {{ consultant.email }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+.af-search-form .input-group {
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.af-search-form .form-control:focus {
+    border-color: var(--af-primary);
+    box-shadow: 0 0 0 0.25rem rgba(45, 122, 62, 0.25);
+}
+
+.af-card-hover {
+    transition: all 0.3s ease;
+    border: 1px solid var(--af-border);
+}
+
+.af-card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-color: var(--af-primary);
+}
+
+.af-search-section {
+    border-bottom: 2px solid var(--af-border);
+    padding-bottom: 2rem;
+}
+
+.af-search-section:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %}

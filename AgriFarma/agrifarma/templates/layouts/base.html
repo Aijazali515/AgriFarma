@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimal-ui">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    
+    <title>{% block title %}AgriFarma{% endblock %} | Agriculture Community Platform</title>
+    
+    <meta name="description" content="AgriFarma - Integrated platform for agriculture knowledge, community discussions, consultancy services, and trusted marketplace"/>
+    <meta name="keywords" content="agriculture, farming, consultancy, agricultural marketplace, farming community, knowledge base, agritech"/>
+    <meta name="author" content="AgriFarma"/>
+    
+    <!-- Favicon icon -->
+    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- AgriFarma Custom Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/agrifarma.css') }}?v=20251113">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/theme.css') }}?v=20251113">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/brand.css') }}?v=20251113">
+    
+    {% block stylesheets %}{% endblock stylesheets %}
+</head>
+<body class="af-body af-dark-init">
+    <div class="af-app-wrapper" id="af-app-wrapper" data-layout="overlay-right">
+        
+        <!-- Navigation -->
+        {% include 'includes/navigation.html' %}
+        
+        <div class="af-page-container" id="af-page">
+            
+            <!-- Auto Page Header (except homepage) -->
+            {% set _ep = request.endpoint.split('.')[-1] if request.endpoint else '' %}
+            {% if _ep and _ep not in ['index', 'home'] and not (page_header_hide|default(false)) %}
+                {% from 'includes/page_header.html' import page_header %}
+                {{ page_header(title=page_title|default(_ep.replace('_',' ').title()), subtitle=page_subtitle|default(None), icon=page_icon|default(None)) }}
+            {% endif %}
+            
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="af-messages">
+                        {% for category, message in messages %}
+                            <div class="af-alert af-alert-{{ category if category in ['success', 'warning', 'danger', 'info'] else 'info' }}">
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            <!-- Main Content -->
+            <main id="af-main" class="af-main-content" tabindex="-1" aria-label="Main Content">
+                {% block content %}{% endblock content %}
+            </main>
+            
+            {% block extra_content %}{% endblock extra_content %}
+            
+            <!-- Footer -->
+            {% include 'includes/footer.html' %}
+            
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="{{ url_for('static', filename='js/sidebar-toggle.js') }}?v=20251113" defer></script>
+    <script src="{{ url_for('static', filename='js/theme-toggle.js') }}?v=20251113" defer></script>
+    <script src="{{ url_for('static', filename='js/mobile-menu.js') }}?v=20251113" defer></script>
+    
+    {% block javascripts %}{% endblock javascripts %}
+</body>
+</html>

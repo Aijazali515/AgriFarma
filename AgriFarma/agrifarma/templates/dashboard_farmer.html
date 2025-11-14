@@ -1,0 +1,38 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Farmer Dashboard{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <h3>Welcome, Farmer</h3>
+      <div class="af-card mb-3">
+        <h5>Latest Forum Posts</h5>
+        <ul class="list-unstyled">
+          <li class="py-2 border-bottom">Post title — <small class="text-muted">by Ali • 2 replies</small></li>
+          <li class="py-2 border-bottom">Post title — <small class="text-muted">by Sara • 5 replies</small></li>
+        </ul>
+      </div>
+      <div class="af-card mb-3">
+        <h5>Marketplace Listings</h5>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="product-card af-card">Seeds — Rs. 500</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4 af-sidebar">
+      <div class="af-card">
+        <h6>Consultant Suggestions</h6>
+        <div class="consultant-card mt-2">
+          <div class="avatar"></div>
+          <div>
+            <div><strong>Dr. Kamran</strong></div>
+            <div class="text-muted-small">Soil | Expert</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

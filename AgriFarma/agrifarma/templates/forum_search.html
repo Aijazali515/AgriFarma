@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row">
+  <div class="col-md-8">
+    <h4>Search results for "{{ q }}"</h4>
+    {% if results %}
+      {% for p in results %}
+        <div class="card mb-2">
+          <div class="card-body">
+            <h5 class="card-title"><a href="{{ url_for('forum.thread_view', thread_id=p.thread_id) }}">{{ p.thread.title }}</a></h5>
+            <p class="card-text">{{ p.content|truncate(200) }}</p>
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p class="text-muted">No results found.</p>
+    {% endif %}
+  </div>
+  <div class="col-md-4">
+    {% include 'forum_index.html' %}
+  </div>
+</div>
+{% endblock %}

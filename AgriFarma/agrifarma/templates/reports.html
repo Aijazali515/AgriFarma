@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container py-4">
+  <h2>Reports & Analytics</h2>
+  <div class="mb-3">
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin.report_sales_csv', start=start, end=end) }}"><i class="bi bi-filetype-csv"></i> Export Sales CSV</a>
+    <a class="btn btn-outline-secondary btn-sm" href="{{ url_for('admin.report_sales_xlsx', start=start, end=end) }}"><i class="bi bi-file-earmark-excel"></i> Export Sales Excel</a>
+  </div>
+  <form class="row g-2 mb-3" method="get">
+    <div class="col-auto">
+      <label class="form-label">Start</label>
+      <input type="date" class="form-control" name="start" value="{{ start }}">
+    </div>
+    <div class="col-auto">
+      <label class="form-label">End</label>
+      <input type="date" class="form-control" name="end" value="{{ end }}">
+    </div>
+    <div class="col-auto">
+      <label class="form-label">Order Status</label>
+      <input type="text" class="form-control" name="status" value="{{ status }}" placeholder="e.g. Completed">
+    </div>
+    <div class="col-auto">
+      <label class="form-label">Customer Email</label>
+      <input type="text" class="form-control" name="customer" value="{{ customer }}" placeholder="Search email">
+    </div>
+    <div class="col-auto">
+      <label class="form-label">Low Inventory Threshold</label>
+      <input type="number" class="form-control" name="low" value="{{ low }}" min="0">
+    </div>
+    <div class="col-auto align-self-end">
+      <button class="btn btn-primary">Filter</button>
+    </div>
+  </form>
+
+  <div class="row">
+    <div class="col-md-6">
+      <h5>Top Selling Products (Revenue)</h5>
+      <div class="card mb-3">
+        <div class="card-body">
+          <canvas id="chartTop"></canvas>
+        </div>
+      </div>
+      {% if top_revenue is not none %}
+      <table class="table table-sm table-striped">
+        <thead><tr><th>Name</th><th>Units</th><th>Revenue</th></tr></thead>
+        <tbody>
+        {% for r in top_revenue %}
+          <tr><td>{{ r.name if r.name is defined else r['name'] }}</td><td>{{ r.units if r.units is defined else r['units'] }}</td><td>${{ '%.2f'|format(r.revenue if r.revenue is defined else r['revenue']) }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}<p class="text-muted">No sales in range.</p>{% endif %}
+
+      <h5 class="mt-4">Top Selling Products (Units)</h5>
+      <div class="card mb-3">
+        <div class="card-body">
+          <canvas id="chartTopUnits"></canvas>
+        </div>
+      </div>
+      {% if top_units is not none %}
+      <table class="table table-sm table-striped">
+        <thead><tr><th>Name</th><th>Units</th></tr></thead>
+        <tbody>
+        {% for r in top_units %}
+          <tr><td>{{ r.name if r.name is defined else r['name'] }}</td><td>{{ r.units if r.units is defined else r['units'] }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}<p class="text-muted">No unit sales in range.</p>{% endif %}
+    </div>
+    <div class="col-md-6">
+      <h5>User Registrations (Daily)</h5>
+      <div class="card mb-3">
+        <div class="card-body">
+          <canvas id="chartReg"></canvas>
+        </div>
+      </div>
+      {% if reg_data is not none %}
+      <table class="table table-sm">
+        <thead><tr><th>Date</th><th>Count</th></tr></thead>
+        <tbody>
+        {% for r in reg_data %}
+          <tr><td>{{ r.date if r.date is defined else r['date'] }}</td><td>{{ r.count if r.count is defined else r['count'] }}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+      {% else %}<p class="text-muted">No registrations in range.</p>{% endif %}
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <div class="col-md-6">
+      <h5>Low Inventory</h5>
+      {% if low_inventory %}
+      <table class="table table-sm">
+        <thead><tr><th>Name</th><th>Inventory</th></tr></thead>
+        <tbody>
+          {% for p in low_inventory %}
+          <tr><td>{{ p.name }}</td><td><span class="badge bg-danger">{{ p.inventory }}</span></td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}<p class="text-muted">No low inventory items.</p>{% endif %}
+    </div>
+    <div class="col-md-6">
+      <h5>Orders</h5>
+      {% if orders %}
+      <table class="table table-sm table-striped">
+        <thead><tr><th>ID</th><th>User</th><th>Status</th><th>Date</th></tr></thead>
+        <tbody>
+          {% for o in orders %}
+          <tr><td>{{ o.id }}</td><td>{{ o.user_id }}</td><td>{{ o.status }}</td><td>{{ o.created_at.strftime('%Y-%m-%d') }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}<p class="text-muted">No orders match filters.</p>{% endif %}
+    </div>
+  </div>
+</div>
+
+<!-- Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" integrity="sha256-q8m9QqP6r0XkA1RtUp5m3J8aGDKf2gRmqLnsw8lV7Vw=" crossorigin="anonymous"></script>
+<script>
+  (function() {
+    const topRevenue = {{ (top_revenue or [])|tojson }};
+    const topUnits = {{ (top_units or [])|tojson }};
+    const regData = {{ (reg_data or [])|tojson }};
+
+    // Top products by revenue
+    if (topRevenue.length && document.getElementById('chartTop')) {
+      const labels = topRevenue.map(r => r.name || r['name']);
+      const revenue = topRevenue.map(r => (r.revenue ?? r['revenue']) || 0);
+      new Chart(document.getElementById('chartTop'), {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Revenue ($)', data: revenue, backgroundColor: 'rgba(42,122,75,0.6)', borderColor: 'rgba(37,109,68,1)', borderWidth: 1 }] },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    }
+
+    // Top products by units
+    if (topUnits.length && document.getElementById('chartTopUnits')) {
+      const labels = topUnits.map(r => r.name || r['name']);
+      const units = topUnits.map(r => (r.units ?? r['units']) || 0);
+      new Chart(document.getElementById('chartTopUnits'), {
+        type: 'bar',
+        data: { labels, datasets: [{ label: 'Units Sold', data: units, backgroundColor: 'rgba(230,126,34,0.6)', borderColor: 'rgba(211,84,0,1)', borderWidth: 1 }] },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    }
+
+    // Registrations per day
+    if (regData.length && document.getElementById('chartReg')) {
+      const labels = regData.map(r => (r.date || r['date']));
+      const counts = regData.map(r => (r.count ?? r['count']) || 0);
+      new Chart(document.getElementById('chartReg'), {
+        type: 'line',
+        data: { labels, datasets: [{ label: 'Registrations', data: counts, borderColor: 'rgba(0,119,182,1)', backgroundColor: 'rgba(0,119,182,0.15)', tension: .25, fill: true }] },
+        options: { responsive: true, scales: { y: { beginAtZero: true } } }
+      });
+    }
+  })();
+</script>
+{% endblock %}

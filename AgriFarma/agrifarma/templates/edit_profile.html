@@ -1,0 +1,193 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <!-- Page Header -->
+      <div class="d-flex align-items-center mb-4">
+        <a href="{{ url_for('auth.profile_view', id=current_user.id) }}" class="af-btn af-btn-outline af-btn-sm me-3">
+          <i class="bi bi-arrow-left me-1"></i>Back to Profile
+        </a>
+        <h2 class="mb-0">Edit Profile</h2>
+      </div>
+
+      <!-- Edit Form Card -->
+      <div class="af-card">
+        <div class="af-card-header">
+          <i class="bi bi-pencil-square me-2"></i>Profile Information
+        </div>
+        <div class="af-card-body">
+          <form method="post" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            
+            <!-- Display Picture Upload -->
+            <div class="mb-4 text-center">
+              <div class="af-dp-preview-wrapper mb-3">
+                {% if current_user.profile and current_user.profile.display_picture %}
+                  <img src="{{ url_for('static', filename='uploads/profiles/' + current_user.profile.display_picture) }}" 
+                       alt="Current DP" 
+                       class="af-dp-preview" 
+                       id="dpPreview">
+                {% else %}
+                  <div class="af-dp-preview af-dp-placeholder" id="dpPreview">
+                    <i class="bi bi-person-fill"></i>
+                  </div>
+                {% endif %}
+              </div>
+              
+              <div class="mb-2">
+                <label class="form-label fw-bold">{{ form.display_picture.label }}</label>
+                <div class="af-file-upload-wrapper">
+                  {{ form.display_picture(class="form-control", id="displayPictureInput", accept="image/*") }}
+                  {% if form.display_picture.errors %}
+                    <div class="text-danger small mt-1">
+                      {% for error in form.display_picture.errors %}
+                        {{ error }}
+                      {% endfor %}
+                    </div>
+                  {% endif %}
+                </div>
+                <small class="text-muted">
+                  <i class="bi bi-info-circle me-1"></i>Supported formats: JPG, PNG, GIF (Max 5MB)
+                </small>
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Personal Information -->
+            <div class="row g-3">
+              <div class="col-md-12">
+                <label class="form-label fw-bold">{{ form.name.label }}</label>
+                {{ form.name(class="form-control" + (" is-invalid" if form.name.errors else "")) }}
+                {% if form.name.errors %}
+                  <div class="invalid-feedback">
+                    {% for error in form.name.errors %}{{ error }}{% endfor %}
+                  </div>
+                {% endif %}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold">{{ form.mobile.label }}</label>
+                {{ form.mobile(class="form-control", placeholder="+1 (555) 123-4567") }}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label fw-bold">{{ form.profession.label }}</label>
+                {{ form.profession(class="form-select") }}
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label fw-bold">{{ form.expertise_level.label }}</label>
+                {{ form.expertise_level(class="form-select") }}
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Location Information -->
+            <h5 class="mb-3">
+              <i class="bi bi-geo-alt me-2"></i>Location
+            </h5>
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label class="form-label">{{ form.city.label }}</label>
+                {{ form.city(class="form-control", placeholder="e.g., San Francisco") }}
+              </div>
+
+              <div class="col-md-6">
+                <label class="form-label">{{ form.state.label }}</label>
+                {{ form.state(class="form-control", placeholder="e.g., California") }}
+              </div>
+
+              <div class="col-md-12">
+                <label class="form-label">{{ form.country.label }}</label>
+                {{ form.country(class="form-control", placeholder="e.g., United States") }}
+              </div>
+            </div>
+
+            <hr class="my-4">
+
+            <!-- Action Buttons -->
+            <div class="d-flex justify-content-between">
+              <a href="{{ url_for('auth.profile_view', id=current_user.id) }}" class="af-btn af-btn-outline">
+                <i class="bi bi-x-circle me-1"></i>Cancel
+              </a>
+              {{ form.submit(class="af-btn af-btn-primary") }}
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+.af-dp-preview-wrapper {
+  display: inline-block;
+  position: relative;
+}
+
+.af-dp-preview {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid var(--af-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: white;
+}
+
+.af-dp-placeholder {
+  background: linear-gradient(135deg, #2d7a3e 0%, #4a9b5a 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+}
+
+.af-file-upload-wrapper {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.form-label.fw-bold {
+  color: var(--af-text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--af-primary);
+  box-shadow: 0 0 0 0.2rem rgba(45, 122, 62, 0.25);
+}
+</style>
+
+<script>
+// Preview uploaded image before form submission
+document.getElementById('displayPictureInput')?.addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const preview = document.getElementById('dpPreview');
+      if (preview.tagName === 'IMG') {
+        preview.src = event.target.result;
+      } else {
+        // Replace placeholder div with img
+        const img = document.createElement('img');
+        img.src = event.target.result;
+        img.className = 'af-dp-preview';
+        img.id = 'dpPreview';
+        preview.parentNode.replaceChild(img, preview);
+      }
+    };
+    reader.readAsDataURL(file);
+  }
+});
+</script>
+{% endblock %}

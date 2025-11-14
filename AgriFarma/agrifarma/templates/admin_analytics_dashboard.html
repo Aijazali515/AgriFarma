@@ -1,0 +1,484 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="af-hero af-hero-cover af-overlay-dark fullscreen" style="background-image: url('{{ url_for('static', filename='img/backgrounds/admin_bg.jpg') }}');">
+  <div class="af-hero-inner" style="display: block !important;">
+    <div class="af-page-header text-white mb-4">
+      <h1 class="af-page-title af-hero-title mb-2">
+        <i class="bi bi-speedometer2"></i> Admin Dashboard
+      </h1>
+      <p class="af-page-subtitle af-hero-subtitle mb-0">Platform analytics and moderation tools</p>
+    </div>
+
+    <!-- Key Metrics -->
+    <div class="af-stats-grid mb-4" style="width: 100%; max-width: 100%;">
+      <div class="af-stat-card" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px); border-left: 4px solid #3b82f6;">
+        <div class="af-stat-icon" style="background: linear-gradient(135deg, #3498db 0%, #5dade2 100%);">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="af-stat-value">{{ users_count }}</div>
+        <div class="af-stat-label">Total Users</div>
+        <div class="af-stat-change positive">
+          <i class="bi bi-arrow-up"></i> Active community
+        </div>
+      </div>
+      <div class="af-stat-card" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px); border-left: 4px solid #22c55e;">
+        <div class="af-stat-icon" style="background: linear-gradient(135deg, #27ae60 0%, #52be80 100%);">
+          <i class="bi bi-basket3"></i>
+        </div>
+        <div class="af-stat-value">{{ products_count }}</div>
+        <div class="af-stat-label">Total Products</div>
+        <div class="af-stat-change positive">
+          <i class="bi bi-graph-up"></i> Growing inventory
+        </div>
+      </div>
+      <div class="af-stat-card" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px); border-left: 4px solid #f59e0b;">
+        <div class="af-stat-icon" style="background: linear-gradient(135deg, #f39c12 0%, #f5b041 100%);">
+          <i class="bi bi-receipt"></i>
+        </div>
+        <div class="af-stat-value">{{ orders_count }}</div>
+        <div class="af-stat-label">Total Orders</div>
+        <div class="af-stat-change positive">
+          <i class="bi bi-currency-dollar"></i> Revenue stream
+        </div>
+      </div>
+      <div class="af-stat-card" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px); border-left: 4px solid #ef4444;">
+        <div class="af-stat-icon" style="background: linear-gradient(135deg, #e74c3c 0%, #ec7063 100%);">
+          <i class="bi bi-exclamation-triangle"></i>
+        </div>
+        <div class="af-stat-value">{{ pending_posts }}</div>
+        <div class="af-stat-label">Pending Review</div>
+        {% if pending_posts > 0 %}
+          <div class="af-stat-change negative">
+            <i class="bi bi-clock"></i> Requires attention
+          </div>
+        {% else %}
+          <div class="af-stat-change positive">
+            <i class="bi bi-check-circle"></i> All clear
+          </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="af-card mb-4" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px);">
+      <div class="af-card-header" style="color: #cbd5e1 !important; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <i class="bi bi-lightning-charge"></i> Quick Actions
+      </div>
+      <div class="af-card-body p-4">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <a href="{{ url_for('admin.users') }}" class="af-btn af-btn-outline w-100 d-flex flex-column align-items-center gap-2 py-3">
+              <i class="bi bi-people" style="font-size: 2rem;"></i>
+              <span>Manage Users</span>
+            </a>
+          </div>
+          <div class="col-md-3">
+            <a href="{{ url_for('admin.moderation') }}" class="af-btn af-btn-outline w-100 d-flex flex-column align-items-center gap-2 py-3">
+              <i class="bi bi-shield-check" style="font-size: 2rem;"></i>
+              <span>Moderation Queue</span>
+              {% if pending_posts > 0 %}
+                <span class="af-badge af-badge-danger">{{ pending_posts }}</span>
+              {% endif %}
+            </a>
+          </div>
+          <div class="col-md-3">
+            <a href="{{ url_for('admin.reports') }}" class="af-btn af-btn-outline w-100 d-flex flex-column align-items-center gap-2 py-3">
+              <i class="bi bi-graph-up-arrow" style="font-size: 2rem;"></i>
+              <span>View Reports</span>
+            </a>
+          </div>
+          <div class="col-md-3">
+            <a href="{{ url_for('shop.admin_dashboard') }}" class="af-btn af-btn-outline w-100 d-flex flex-column align-items-center gap-2 py-3">
+              <i class="bi bi-shop" style="font-size: 2rem;"></i>
+              <span>Shop Management</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row g-4 mb-4">
+  <!-- Moderation Queue -->
+  <div class="col-lg-6">
+    <div class="af-card h-100" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px);">
+      <div class="af-card-header" style="color: #cbd5e1 !important; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <i class="bi bi-shield-exclamation"></i> Pending Moderation
+      </div>
+      <div class="af-card-body p-3">
+        {% if pending_items %}
+          <div class="list-group list-group-flush">
+            {% for item in pending_items[:5] %}
+              <div class="list-group-item" style="background: rgba(15, 20, 30, 0.5); border-color: rgba(255,255,255,0.05);">
+                <div class="d-flex w-100 justify-content-between align-items-start">
+                  <div class="flex-grow-1">
+                    <h6 class="mb-1" style="color: #e2e8f0;">
+                      {% if item.type == 'blog' %}
+                        <i class="bi bi-journal-text" style="color: #38bdf8;"></i> Blog Post
+                      {% elif item.type == 'product' %}
+                        <i class="bi bi-basket" style="color: #fbbf24;"></i> Product
+                      {% elif item.type == 'consultant' %}
+                        <i class="bi bi-person-badge" style="color: #34d399;"></i> Consultant
+                      {% endif %}
+                    </h6>
+                    <p class="mb-1" style="color: #cbd5e1;"><strong>{{ item.title }}</strong></p>
+                    <small style="color: #94a3b8;">
+                      <i class="bi bi-person"></i> {{ item.author }}
+                      • <i class="bi bi-clock"></i> {{ item.date }}
+                    </small>
+                  </div>
+                  <div>
+                    <span class="af-badge af-badge-warning">Pending</span>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-4" style="color: #94a3b8;">
+            <i class="bi bi-check-circle" style="font-size: 3rem; color: #34d399;"></i>
+            <p class="mt-2">No pending items. Great work!</p>
+          </div>
+        {% endif %}
+      </div>
+      {% if pending_items %}
+        <div class="af-card-footer">
+          <a href="{{ url_for('admin.moderation') }}" class="af-btn af-btn-primary af-btn-sm w-100">
+            <i class="bi bi-eye"></i> Review All ({{ pending_items|length }})
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Recent User Activity -->
+  <div class="col-lg-6">
+    <div class="af-card h-100" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px);">
+      <div class="af-card-header" style="color: #cbd5e1 !important; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <i class="bi bi-activity"></i> Recent User Activity
+      </div>
+      <div class="af-card-body p-3">
+        {% if recent_users %}
+          <div class="list-group list-group-flush">
+            {% for user in recent_users[:5] %}
+              <div class="list-group-item" style="background: rgba(15, 20, 30, 0.5); border-color: rgba(255,255,255,0.05);">
+                <div class="d-flex w-100 justify-content-between align-items-center">
+                  <div>
+                    <h6 class="mb-1" style="color: #e2e8f0;">
+                      <i class="bi bi-person-circle" style="color: #60a5fa;"></i>
+                      {{ user.profile.name if user.profile and user.profile.name else user.email.split('@')[0] }}
+                    </h6>
+                    <small style="color: #94a3b8;">
+                      <i class="bi bi-envelope"></i> {{ user.email }}
+                      • <i class="bi bi-calendar-plus"></i> Joined {{ user.join_date.strftime('%b %d, %Y') }}
+                    </small>
+                  </div>
+                  <div>
+                    <span class="af-badge af-badge-{{ 'success' if user.is_active else 'danger' }}">
+                      {{ 'Active' if user.is_active else 'Inactive' }}
+                    </span>
+                    <span class="af-badge af-badge-info">{{ user.role }}</span>
+                  </div>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <div class="text-center py-4 text-muted">
+            <i class="bi bi-people" style="font-size: 3rem;"></i>
+            <p class="mt-2">No users yet</p>
+          </div>
+        {% endif %}
+      </div>
+      {% if recent_users %}
+        <div class="af-card-footer">
+          <a href="{{ url_for('admin.users') }}" class="af-btn af-btn-outline af-btn-sm w-100">
+            <i class="bi bi-people"></i> View All Users
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- System Health -->
+  <div class="col-lg-12">
+    <div class="af-card" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px);">
+      <div class="af-card-header" style="color: #cbd5e1 !important; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <i class="bi bi-heartbeat"></i> System Health & Metrics
+      </div>
+      <div class="af-card-body p-4">
+        <div class="row g-4 text-center">
+          <div class="col-md-3">
+            <div class="p-3 rounded" style="background: rgba(15, 20, 30, 0.8); border: 1px solid rgba(255,255,255,0.05);">
+              <i class="bi bi-chat-dots" style="font-size: 2rem; color: #60a5fa;"></i>
+              <h4 class="mt-2 mb-0" style="color: #f1f5f9;">{{ forum_threads or 0 }}</h4>
+              <small style="color: #94a3b8;">Forum Threads</small>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="p-3 rounded" style="background: rgba(15, 20, 30, 0.8); border: 1px solid rgba(255,255,255,0.05);">
+              <i class="bi bi-journal-check" style="font-size: 2rem; color: #34d399;"></i>
+              <h4 class="mt-2 mb-0" style="color: #f1f5f9;">{{ approved_posts or 0 }}</h4>
+              <small style="color: #94a3b8;">Approved Articles</small>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="p-3 rounded" style="background: rgba(15, 20, 30, 0.8); border: 1px solid rgba(255,255,255,0.05);">
+              <i class="bi bi-people" style="font-size: 2rem; color: #fbbf24;"></i>
+              <h4 class="mt-2 mb-0" style="color: #f1f5f9;">{{ consultants_count or 0 }}</h4>
+              <small style="color: #94a3b8;">Active Consultants</small>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="p-3 rounded" style="background: rgba(15, 20, 30, 0.8); border: 1px solid rgba(255,255,255,0.05);">
+              <i class="bi bi-star" style="font-size: 2rem; color: #38bdf8;"></i>
+              <h4 class="mt-2 mb-0" style="color: #f1f5f9;">{{ reviews_count or 0 }}</h4>
+              <small style="color: #94a3b8;">Product Reviews</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Registration Trend -->
+  <div class="col-lg-12">
+    <div class="af-card" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px);">
+      <div class="af-card-header" style="color: #cbd5e1 !important; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05);">
+        <i class="bi bi-calendar-range"></i> User Registrations (Last {{ trend_days }} Days)
+      </div>
+      <div class="af-card-body p-4">
+        {% if reg_trend %}
+          {% set max_reg = reg_trend|map(attribute='count')|max %}
+          <div class="table-responsive">
+            <table class="table table-sm table-striped mb-0 align-middle">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th class="text-end">Registrations</th>
+                  <th style="width:40%;">Trend</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for r in reg_trend %}
+                  {% set pct = (r.count / (max_reg if max_reg else 1)) * 100 %}
+                  <tr>
+                    <td class="small">{{ r.date }}</td>
+                    <td class="text-end fw-semibold">{{ r.count }}</td>
+                    <td>
+                      <div class="progress" style="height:6px;">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: {{ '%.0f'|format(pct) }}%;" aria-valuenow="{{ '%.0f'|format(pct) }}" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-muted">No registrations in the selected window.</div>
+        {% endif %}
+        <form method="get" class="mt-3 d-inline-flex align-items-center gap-2">
+          <label for="reg_days" class="small text-muted">Days:</label>
+          <select id="reg_days" name="reg_days" class="form-select form-select-sm" onchange="this.form.submit()">
+            {% for d in [7,14,30,60] %}
+              <option value="{{ d }}" {% if d == trend_days %}selected{% endif %}>{{ d }}</option>
+            {% endfor %}
+          </select>
+          <noscript><button class="af-btn af-btn-sm af-btn-primary" type="submit">Update</button></noscript>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Analytics Charts -->
+  <div class="row g-4 my-4">
+    <div class="col-lg-6">
+      <div class="af-card h-100" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px);">
+        <div class="af-card-header" style="color: #cbd5e1 !important; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05);"><i class="bi bi-pie-chart"></i> Orders by Status</div>
+        <div class="af-card-body p-4">
+          <canvas id="ordersStatusChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6">
+      <div class="af-card h-100" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px);">
+        <div class="af-card-header" style="color: #cbd5e1 !important; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05);"><i class="bi bi-graph-up"></i> Revenue (Last 30 Days)</div>
+        <div class="af-card-body p-4">
+          <canvas id="revenueChart" height="180"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-12">
+      <div class="af-card" style="background: rgba(20, 25, 35, 0.9) !important; backdrop-filter: blur(10px);">
+        <div class="af-card-header" style="color: #cbd5e1 !important; font-weight: 600; border-bottom: 1px solid rgba(255,255,255,0.05);"><i class="bi bi-bar-chart"></i> Top Products by Revenue</div>
+        <div class="af-card-body p-4">
+          <canvas id="topProductsChart" height="140"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script>
+    (function(){
+      // Safe data from server
+      const ordersByStatus = {{ orders_by_status|tojson }};
+      const revenueLabels = {{ revenue_labels|tojson }};
+      const revenueValues = {{ revenue_values|tojson }};
+      const topProducts = {{ top_products|tojson }};
+
+      // Chart defaults for dark theme
+      Chart.defaults.color = '#94a3b8';
+      Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.05)';
+
+      // Orders by Status Doughnut
+      const statusCtx = document.getElementById('ordersStatusChart');
+      if (statusCtx) {
+        let labels, values;
+        if (ordersByStatus && Object.keys(ordersByStatus).length > 0) {
+          labels = Object.keys(ordersByStatus);
+          values = Object.values(ordersByStatus);
+        } else {
+          // Sample data for empty state
+          labels = ['Pending', 'Processing', 'Completed'];
+          values = [5, 3, 12];
+        }
+        new Chart(statusCtx, {
+          type: 'doughnut',
+          data: {
+            labels,
+            datasets: [{
+              data: values,
+              backgroundColor: ['#60a5fa','#34d399','#fbbf24','#f87171','#a78bfa'],
+              borderWidth: 0
+            }]
+          },
+          options: { 
+            responsive: true, 
+            plugins: { 
+              legend: { 
+                position: 'bottom',
+                labels: { color: '#cbd5e1', padding: 15 }
+              } 
+            }
+          }
+        });
+      }
+
+      // Revenue Line Chart
+      const revCtx = document.getElementById('revenueChart');
+      if (revCtx) {
+        let labels, values;
+        if (revenueLabels && revenueLabels.length > 0) {
+          labels = revenueLabels;
+          values = revenueValues;
+        } else {
+          // Sample data for empty state
+          const days = 30;
+          labels = Array.from({length: days}, (_, i) => `Day ${i+1}`);
+          values = Array.from({length: days}, () => Math.random() * 1000);
+        }
+        new Chart(revCtx, {
+          type: 'line',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Revenue (PKR)',
+              data: values,
+              borderColor: '#34d399',
+              backgroundColor: 'rgba(52, 211, 153, 0.1)',
+              tension: 0.4,
+              fill: true,
+              borderWidth: 2
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: { 
+              y: { 
+                beginAtZero: true,
+                grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                ticks: { color: '#94a3b8' }
+              },
+              x: {
+                grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                ticks: { color: '#94a3b8' }
+              }
+            },
+            plugins: { 
+              legend: { 
+                display: true,
+                labels: { color: '#cbd5e1' }
+              }
+            }
+          }
+        });
+      }
+
+      // Top Products Bar Chart
+      const topCtx = document.getElementById('topProductsChart');
+      if (topCtx) {
+        let labels, values;
+        if (topProducts && topProducts.length > 0) {
+          labels = topProducts.map(p => p.name);
+          values = topProducts.map(p => p.revenue);
+        } else {
+          // Sample data for empty state
+          labels = ['Product A', 'Product B', 'Product C', 'Product D', 'Product E'];
+          values = [4500, 3200, 2800, 2100, 1500];
+        }
+        new Chart(topCtx, {
+          type: 'bar',
+          data: {
+            labels: labels,
+            datasets: [{
+              label: 'Revenue (PKR)',
+              data: values,
+              backgroundColor: '#60a5fa',
+              borderWidth: 0,
+              borderRadius: 6
+            }]
+          },
+          options: {
+            responsive: true,
+            scales: { 
+              y: { 
+                beginAtZero: true,
+                grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                ticks: { color: '#94a3b8' }
+              },
+              x: {
+                grid: { display: false },
+                ticks: { color: '#94a3b8' }
+              }
+            },
+            plugins: { 
+              legend: { 
+                display: true,
+                labels: { color: '#cbd5e1' }
+              }
+            }
+          }
+        });
+      }
+    })();
+  </script>
+
+    <!-- Admin Notes -->
+    <div class="af-alert af-alert-info my-4" style="background:rgba(255,255,255,0.9);">
+      <strong><i class="bi bi-info-circle"></i> Admin Tips:</strong>
+      <ul class="mb-0 mt-2 ps-3">
+        <li>Regularly review the moderation queue to ensure quality content</li>
+        <li>Monitor user activity for suspicious patterns</li>
+        <li>Check the Reports section for detailed analytics and insights</li>
+        <li>Keep product inventory updated to avoid stockouts</li>
+      </ul>
+    </div>
+  </div>
+</div>
+{% endblock %}

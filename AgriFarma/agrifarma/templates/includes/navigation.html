@@ -1,0 +1,401 @@
+<!-- AgriFarma Navigation Header -->
+<nav class="af-navbar" role="navigation" aria-label="Main Navigation" data-nav="top">
+  <div class="af-navbar-content">
+    <div class="af-navbar-left">
+      <!-- Logo/Brand -->
+      <a href="{{ url_for('main.index') }}" class="af-brand">
+        <div class="af-brand-icon">
+          <i class="bi bi-diagram-3-fill"></i>
+        </div>
+        <div class="af-brand-text">
+          <span class="af-brand-name">AgriFarma</span>
+          <span class="af-brand-tagline">Farmers’ Digital Hub of Sindh</span>
+        </div>
+      </a>
+      
+      <div class="af-breadcrumb" aria-label="Breadcrumb">
+        {% block breadcrumb %}
+          {% set ep = request.endpoint.split('.')[-1] if request.endpoint else '' %}
+          {% if ep and ep != 'index' %}
+            <a href="{{ url_for('main.index') }}" class="af-breadcrumb-home"><i class="bi bi-house-door-fill"></i><span class="visually-hidden">Home</span></a>
+            <i class="bi bi-chevron-right separator" aria-hidden="true"></i>
+            <span class="current">{{ ep.replace('_',' ').title() }}</span>
+          {% endif %}
+        {% endblock %}
+      </div>
+    </div>
+    
+    <div class="af-navbar-right">
+      <!-- Global Search -->
+      <form action="{{ url_for('search.global_search') }}" method="get" class="af-search-bar d-none d-md-block">
+        <div class="input-group input-group-sm">
+          <input type="text" 
+                 name="q" 
+                 class="form-control" 
+                 placeholder="Search..." 
+                 autocomplete="off"
+                 id="global-search-input">
+          <button class="btn btn-outline-secondary" type="submit">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+      </form>
+      
+      <!-- Shopping Cart -->
+      {% if current_user.is_authenticated %}
+      <a href="{{ url_for('shop.cart_view') }}" class="af-cart-btn position-relative" title="View Cart">
+        <i class="bi bi-cart3" style="font-size: 1.4rem;"></i>
+        {% set cart_count = current_user.cart_items.count() if current_user.cart_items else 0 %}
+        {% if cart_count > 0 %}
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.7rem;">
+          {{ cart_count }}
+          <span class="visually-hidden">items in cart</span>
+        </span>
+        {% endif %}
+      </a>
+      {% endif %}
+      
+      <!-- MENU BUTTON with icon - ALWAYS VISIBLE -->
+      <button class="btn btn-outline-light d-flex align-items-center gap-2" 
+              id="mobile-menu-toggle" 
+              aria-label="Open menu" 
+              aria-expanded="false" 
+              aria-controls="af-menu-overlay" 
+              type="button"
+              style="border: 2px solid rgba(59,130,246,0.5); color: #3b82f6; background: rgba(59,130,246,0.1); padding: 0.5rem 1rem; border-radius: 8px; box-shadow: 0 0 20px rgba(59,130,246,0.3);">
+        <i class="bi bi-list" style="font-size: 1.5rem;"></i>
+        <span class="d-none d-md-inline">Menu</span>
+      </button>
+      
+      <!-- Theme Toggle -->
+      <button class="af-theme-toggle" id="af-theme-toggle" type="button" aria-label="Toggle dark mode" aria-pressed="false">
+        <i class="bi bi-moon-stars" aria-hidden="true"></i>
+        <span class="visually-hidden">Toggle theme</span>
+      </button>
+
+      {% if current_user.is_authenticated %}
+        <!-- Profile link (no dropdown) -->
+        {% set _name = (current_user.profile.name if current_user.profile and current_user.profile.name else current_user.email.split('@')[0]) %}
+        {% set _initial = (_name[:1] | upper) if _name else 'U' %}
+        <a class="af-profile-link" href="{{ url_for('auth.profile_view', id=current_user.id) }}" title="Open Profile">
+          <span class="af-avatar af-avatar-40">
+            {% if current_user.profile and current_user.profile.display_picture %}
+              <img class="af-avatar-img" src="{{ url_for('static', filename='uploads/profiles/' + current_user.profile.display_picture) }}" alt="Profile">
+            {% else %}
+              <span class="af-avatar-initials" aria-hidden="true">{{ _initial }}</span>
+            {% endif %}
+          </span>
+          <span class="af-profile-name">{{ _name }}</span>
+        </a>
+      {% else %}
+        <!-- Guest Actions -->
+        <a href="{{ url_for('auth.login') }}" class="af-btn af-btn-outline af-btn-sm">
+          <i class="bi bi-box-arrow-in-right me-1"></i>Login
+        </a>
+        <a href="{{ url_for('auth.register') }}" class="af-btn af-btn-primary af-btn-sm">
+          <i class="bi bi-person-plus me-1"></i>Sign Up
+        </a>
+      {% endif %}
+    </div>
+  </div>
+</nav>
+
+<style>
+/* Restored dark-friendly top navigation + right overlay menu styling */
+.af-navbar {
+  background: linear-gradient(90deg,#0f1d45 0%, #142a63 45%, #0f1d45 100%);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+  padding: .85rem 2.5rem .85rem 2.5rem;
+  box-shadow: 0 4px 20px -6px rgba(0,0,0,.5);
+  position: sticky;
+  top:0; z-index:1200;
+}
+:root[data-theme="dark"] .af-navbar { background: linear-gradient(90deg,#0a162f 0%, #102347 45%, #0a162f 100%); border-color:#1f2e4d; }
+
+.af-navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.af-navbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--af-spacing-lg);
+}
+
+/* Brand/Logo Styling */
+.af-brand {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 0.5rem 0.75rem;
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.05), rgba(59, 130, 246, 0.05));
+  border: 1px solid transparent;
+}
+
+.af-brand:hover {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(59, 130, 246, 0.1));
+  border-color: rgba(59, 130, 246, 0.2);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.af-brand-icon {
+  width: 46px; height:46px; border-radius:14px;
+  background: radial-gradient(circle at 30% 30%, #3b82f6, #1e3a8a 70%);
+  display:flex; align-items:center; justify-content:center; color:#fff; font-size:1.35rem;
+  box-shadow:0 0 0 4px rgba(255,255,255,.05),0 8px 22px -6px rgba(0,0,0,.6),0 0 18px -4px #3b82f6;
+  position:relative; overflow:hidden;
+}
+.af-brand-icon::after { content:""; position:absolute; inset:0; background:linear-gradient(135deg,rgba(255,255,255,.25),transparent); mix-blend-mode:overlay; }
+
+.af-brand:hover .af-brand-icon {
+  transform: rotate(5deg) scale(1.05);
+  box-shadow: 0 8px 20px rgba(34, 197, 94, 0.4);
+}
+
+.af-brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.af-brand-name { font-size:1.35rem; font-weight:800; letter-spacing:.04em; background:linear-gradient(90deg,#3b82f6,#a855f7,#3b82f6); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; line-height:1.1; }
+
+.af-brand-tagline {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--af-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+/* Hamburger menu styles moved to theme.css */
+
+
+.af-navbar-right {
+  display: flex;
+  align-items: center;
+  gap: var(--af-spacing-md);
+}
+
+/* Global Search Bar */
+.af-search-bar {
+  min-width: 250px;
+}
+
+.af-search-bar .form-control {
+  border-right: none;
+}
+
+.af-search-bar .form-control:focus {
+  box-shadow: none;
+  border-color: var(--af-primary);
+}
+
+.af-search-bar .btn {
+  border-left: none;
+}
+
+.af-search-bar .btn:hover {
+  background-color: var(--af-primary);
+  border-color: var(--af-primary);
+  color: white;
+}
+
+.af-user-menu {
+  position: relative;
+}
+
+.af-user-info {
+  display: flex;
+  align-items: center;
+  gap: var(--af-spacing-sm);
+  padding: var(--af-spacing-sm) var(--af-spacing-md);
+  background: var(--af-bg-light);
+  border-radius: var(--af-radius-md);
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.af-user-info:hover,
+.af-user-info:focus {
+  background: var(--af-surface);
+  border-color: var(--af-primary);
+  box-shadow: 0 2px 8px rgba(45, 122, 62, 0.1);
+}
+
+.dropdown-toggle::after {
+  display: none;
+}
+
+.dropdown-menu {
+  margin-top: 0.5rem;
+  border: 1px solid var(--af-border);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: var(--af-radius-md);
+  min-width: 220px;
+  background: var(--af-bg-white);
+}
+
+.dropdown-item {
+  padding: 0.6rem 1rem;
+  transition: all 0.2s ease;
+  color: var(--af-text);
+}
+
+.dropdown-item:hover {
+  background: var(--af-bg-light);
+  color: var(--af-primary);
+}
+
+.dropdown-item.text-danger:hover {
+  background: rgba(220, 53, 69, 0.1);
+  color: #dc3545;
+}
+
+.dropdown-header {
+  color: var(--af-text-secondary);
+  font-weight: 600;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.af-user-avatar {
+  font-size: 1.8rem;
+  color: var(--af-primary);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.af-user-avatar img {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+}
+
+.af-user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.af-user-name {
+  font-weight: 600;
+  color: var(--af-text-primary);
+  font-size: 0.9rem;
+}
+
+.af-breadcrumb .separator { margin:0 .35rem; color: var(--af-text-light); font-size:.85rem; }
+.af-breadcrumb a.af-breadcrumb-home { color: var(--af-primary); text-decoration:none; display:inline-flex; align-items:center; }
+.af-breadcrumb a.af-breadcrumb-home:hover { color: var(--af-primary-600); }
+
+.af-breadcrumb .current {
+  color: var(--af-text-primary);
+  font-weight: 500;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .af-mobile-menu-toggle {
+    display: block;
+  }
+  
+  .af-user-details {
+    display: none;
+  }
+  
+  .af-brand-tagline {
+    display: none;
+  }
+  
+  .af-brand-name {
+    font-size: 1.1rem;
+  }
+  
+  .af-brand-icon {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+}
+
+/* Right side overlay menu accent tweaks (override generic) */
+#af-menu-overlay .af-menu-panel { background:linear-gradient(135deg,#0f1d45,#142a63 60%,#0f1d45); border-left:1px solid rgba(255,255,255,.08); box-shadow:-8px 0 28px -8px rgba(0,0,0,.7); }
+#af-menu-overlay .af-menu-title { text-shadow:0 0 18px rgba(59,130,246,.55); }
+#af-menu-overlay .af-menu-link { backdrop-filter:blur(4px); }
+#af-menu-overlay .af-menu-link.active { border-left:4px solid #a855f7; }
+#af-menu-overlay .af-menu-link:hover { box-shadow:0 6px 16px -4px rgba(59,130,246,.4); }
+</style>
+</style>
+
+<!-- Full-screen/Slide-in Menu Overlay -->
+<div id="af-menu-overlay" class="af-menu-overlay" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="af-menu-backdrop" aria-hidden="true"></div>
+  <div class="af-menu-panel" role="document">
+    <button class="af-menu-close" id="af-menu-overlay-close" aria-label="Close menu" type="button">
+      <span class="af-close-icon" aria-hidden="true"><span></span><span></span></span>
+    </button>
+    
+    <!-- Menu Header -->
+    <div class="af-menu-header">
+      <h2 class="af-menu-title">Menu</h2>
+    </div>
+    
+    {% set ep = request.endpoint or '' %}
+    <ul class="af-menu-nav">
+      <li class="af-menu-section">Search</li>
+      <li><a href="{{ url_for('search.global_search') }}" class="af-menu-link"><i class="bi bi-search"></i>Global Search</a></li>
+      
+      <div class="af-menu-divider"></div>
+      <li class="af-menu-section">Navigation</li>
+      <li><a href="{{ url_for('main.index') }}" class="af-menu-link {% if ep == 'main.index' %}active{% endif %}"><i class="bi bi-house"></i>Dashboard</a></li>
+      <li><a href="{{ url_for('forum.index') }}" class="af-menu-link {% if ep.startswith('forum.') %}active{% endif %}"><i class="bi bi-chat-dots"></i>Forum</a></li>
+      <li><a href="{{ url_for('blog.list_posts') }}" class="af-menu-link {% if ep.startswith('blog.') %}active{% endif %}"><i class="bi bi-journal-text"></i>Knowledge Base</a></li>
+      <li><a href="{{ url_for('consultancy.consultants') }}" class="af-menu-link {% if ep.startswith('consultancy.') %}active{% endif %}"><i class="bi bi-people"></i>Consultancy</a></li>
+      <li><a href="{{ url_for('shop.shop_list') }}" class="af-menu-link {% if ep.startswith('shop.') %}active{% endif %}"><i class="bi bi-basket"></i>Shop</a></li>
+      
+      {% if current_user.is_authenticated and current_user.role == 'Admin' %}
+        <div class="af-menu-divider"></div>
+        <li class="af-menu-section">Administration</li>
+        <li><a href="{{ url_for('admin.dashboard') }}" class="af-menu-link {% if ep == 'admin.dashboard' %}active{% endif %}"><i class="bi bi-speedometer2"></i>Admin Dashboard</a></li>
+        <li><a href="{{ url_for('admin.users') }}" class="af-menu-link {% if ep == 'admin.users' %}active{% endif %}"><i class="bi bi-people-fill"></i>User Management</a></li>
+        <li><a href="{{ url_for('admin.moderation') }}" class="af-menu-link {% if ep == 'admin.moderation' %}active{% endif %}"><i class="bi bi-shield-check"></i>Moderation</a></li>
+        <li><a href="{{ url_for('admin.reports') }}" class="af-menu-link {% if ep == 'admin.reports' %}active{% endif %}"><i class="bi bi-graph-up"></i>Reports</a></li>
+      {% endif %}
+      
+      <div class="af-menu-divider"></div>
+      <li class="af-menu-section">Support</li>
+      <li><a href="{{ url_for('main.about') }}" class="af-menu-link {% if ep == 'main.about' %}active{% endif %}"><i class="bi bi-info-circle"></i>About Us</a></li>
+      <li><a href="{{ url_for('main.contact') }}" class="af-menu-link {% if ep == 'main.contact' %}active{% endif %}"><i class="bi bi-envelope"></i>Contact Us</a></li>
+      <li><a href="{{ url_for('main.faq') }}" class="af-menu-link {% if ep == 'main.faq' %}active{% endif %}"><i class="bi bi-question-circle"></i>FAQs</a></li>
+      <li><a href="{{ url_for('main.team') }}" class="af-menu-link {% if ep == 'main.team' %}active{% endif %}"><i class="bi bi-people"></i>Our Team</a></li>
+      <li><a href="{{ url_for('main.partners') }}" class="af-menu-link {% if ep == 'main.partners' %}active{% endif %}"><i class="bi bi-building"></i>Partners</a></li>
+      <li><a href="{{ url_for('main.feedback') }}" class="af-menu-link {% if ep == 'main.feedback' %}active{% endif %}"><i class="bi bi-chat-left-text"></i>Feedback</a></li>
+      
+      <div class="af-menu-divider"></div>
+      <li class="af-menu-section">Legal</li>
+      <li><a href="{{ url_for('main.terms') }}" class="af-menu-link {% if ep == 'main.terms' %}active{% endif %}"><i class="bi bi-file-text"></i>Terms of Use</a></li>
+      <li><a href="{{ url_for('main.privacy') }}" class="af-menu-link {% if ep == 'main.privacy' %}active{% endif %}"><i class="bi bi-shield-lock"></i>Privacy Policy</a></li>
+      <li><a href="{{ url_for('main.sitemap') }}" class="af-menu-link {% if ep == 'main.sitemap' %}active{% endif %}"><i class="bi bi-diagram-3"></i>Site Map</a></li>
+      
+      <div class="af-menu-divider"></div>
+      <li class="af-menu-section">Account</li>
+      {% if current_user.is_authenticated %}
+        <li><a href="{{ url_for('auth.profile_view', id=current_user.id) }}" class="af-menu-link {% if ep == 'auth.profile_view' %}active{% endif %}"><i class="bi bi-person"></i>Profile</a></li>
+        <li><a href="{{ url_for('auth.logout') }}" class="af-menu-link text-danger"><i class="bi bi-box-arrow-right"></i>Logout</a></li>
+      {% else %}
+        <li><a href="{{ url_for('auth.login') }}" class="af-menu-link {% if ep == 'auth.login' %}active{% endif %}"><i class="bi bi-box-arrow-in-right"></i>Login</a></li>
+        <li><a href="{{ url_for('auth.register') }}" class="af-menu-link {% if ep == 'auth.register' %}active{% endif %}"><i class="bi bi-person-plus"></i>Register</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-3">
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-3 gap-3">
+    <h2 class="mb-0">Order History</h2>
+    <form method="get" class="d-flex align-items-end gap-2" style="max-width:480px;">
+      <div>
+        <label for="date_from" class="form-label mb-1 small">From</label>
+        <input type="date" id="date_from" name="date_from" value="{{ date_from or '' }}" class="form-control form-control-sm" />
+      </div>
+      <div>
+        <label for="date_to" class="form-label mb-1 small">To</label>
+        <input type="date" id="date_to" name="date_to" value="{{ date_to or '' }}" class="form-control form-control-sm" />
+      </div>
+      <div class="pb-1 d-flex gap-2">
+        <button class="btn btn-sm btn-primary" type="submit"><i class="bi bi-filter me-1"></i>Filter</button>
+        <a href="{{ url_for('shop.order_history') }}" class="btn btn-sm btn-outline-secondary">Reset</a>
+      </div>
+    </form>
+    {% if pagination and pagination.pages > 1 %}
+    <nav aria-label="Order pages">
+      <ul class="pagination pagination-sm mb-0">
+        {% if pagination.has_prev %}
+        <li class="page-item"><a class="page-link" href="?page={{ pagination.prev_num }}">Prev</a></li>
+        {% endif %}
+        {% for pnum in range(1, pagination.pages + 1) %}
+        <li class="page-item {% if pnum == pagination.page %}active{% endif %}"><a class="page-link" href="?page={{ pnum }}">{{ pnum }}</a></li>
+        {% endfor %}
+        {% if pagination.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ pagination.next_num }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    {% endif %}
+  </div>
+
+  {% if orders %}
+  {% if date_from or date_to %}
+    <p class="small text-muted mb-2">Showing orders{% if date_from %} from <strong>{{ date_from }}</strong>{% endif %}{% if date_to %} to <strong>{{ date_to }}</strong>{% endif %}.</p>
+  {% endif %}
+  <div class="accordion" id="ordersAccordion">
+    {% for o in orders %}
+    <div class="accordion-item">
+      <h2 class="accordion-header" id="heading{{ o.id }}">
+        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ o.id }}" aria-expanded="false" aria-controls="collapse{{ o.id }}">
+          Order #{{ o.id }} - {{ o.status }} - ${{ '%.2f'|format(o.total_amount) }} ({{ o.created_at.strftime('%Y-%m-%d') }})
+        </button>
+      </h2>
+      <div id="collapse{{ o.id }}" class="accordion-collapse collapse" aria-labelledby="heading{{ o.id }}" data-bs-parent="#ordersAccordion">
+        <div class="accordion-body">
+          <p><strong>Shipping:</strong> {{ o.shipping_address }}</p>
+          <ul class="list-unstyled">
+            {% for it in o.items %}
+              <li>{{ it.product.name }} x {{ it.quantity }} = ${{ '%.2f'|format(it.unit_price * it.quantity) }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="alert alert-secondary">No orders yet.</div>
+  {% endif %}
+
+  {% if pagination and pagination.pages > 1 %}
+  <div class="d-flex justify-content-center my-3">
+    <nav aria-label="Order pages bottom">
+      <ul class="pagination pagination-sm mb-0">
+        {% if pagination.has_prev %}
+        <li class="page-item"><a class="page-link" href="?page={{ pagination.prev_num }}">Prev</a></li>
+        {% endif %}
+        {% for pnum in range(1, pagination.pages + 1) %}
+        <li class="page-item {% if pnum == pagination.page %}active{% endif %}"><a class="page-link" href="?page={{ pnum }}">{{ pnum }}</a></li>
+        {% endfor %}
+        {% if pagination.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ pagination.next_num }}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

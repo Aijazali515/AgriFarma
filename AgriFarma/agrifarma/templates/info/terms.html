@@ -1,0 +1,136 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Terms of Use - AgriFarma{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow-soft">
+        <div class="card-header">
+          <h1 class="mb-0"><i class="bi bi-file-text me-2"></i>Terms of Use</h1>
+        </div>
+        <div class="card-body">
+          <p class="text-muted"><small>Last Updated: November 9, 2025</small></p>
+          
+          <p class="lead">
+            Welcome to AgriFarma. By accessing and using our platform, you agree to comply with and be bound by 
+            the following terms and conditions.
+          </p>
+
+          <hr class="hr-light my-4">
+
+          <h2 class="h4 mt-4 mb-3">1. Acceptance of Terms</h2>
+          <p>
+            By creating an account, accessing, or using AgriFarma services, you acknowledge that you have read, 
+            understood, and agree to be bound by these Terms of Use and our Privacy Policy. If you do not agree 
+            to these terms, please do not use our platform.
+          </p>
+
+          <h2 class="h4 mt-4 mb-3">2. User Accounts</h2>
+          <p><strong>Account Registration:</strong></p>
+          <ul>
+            <li>You must provide accurate, current, and complete information during registration</li>
+            <li>You are responsible for maintaining the confidentiality of your account credentials</li>
+            <li>You must be at least 18 years old to create an account</li>
+            <li>One person or entity may maintain only one account</li>
+          </ul>
+          <p><strong>Account Security:</strong></p>
+          <ul>
+            <li>You are responsible for all activities that occur under your account</li>
+            <li>Notify us immediately of any unauthorized use of your account</li>
+            <li>We reserve the right to suspend or terminate accounts that violate these terms</li>
+          </ul>
+
+          <h2 class="h4 mt-4 mb-3">3. Acceptable Use</h2>
+          <p>You agree NOT to:</p>
+          <ul>
+            <li>Post false, misleading, or fraudulent content</li>
+            <li>Harass, abuse, or harm other users</li>
+            <li>Violate any applicable laws or regulations</li>
+            <li>Infringe on intellectual property rights</li>
+            <li>Distribute spam, malware, or viruses</li>
+            <li>Attempt to gain unauthorized access to our systems</li>
+            <li>Use automated systems (bots) without permission</li>
+          </ul>
+
+          <h2 class="h4 mt-4 mb-3">4. Content and Intellectual Property</h2>
+          <p><strong>Your Content:</strong></p>
+          <ul>
+            <li>You retain ownership of content you post on AgriFarma</li>
+            <li>By posting content, you grant us a license to use, display, and distribute it on our platform</li>
+            <li>You are responsible for ensuring you have rights to any content you post</li>
+          </ul>
+          <p><strong>Our Content:</strong></p>
+          <ul>
+            <li>AgriFarma's platform, design, logo, and original content are protected by copyright and trademark laws</li>
+            <li>You may not reproduce, distribute, or create derivative works without our permission</li>
+          </ul>
+
+          <h2 class="h4 mt-4 mb-3">5. Services and Transactions</h2>
+          <p><strong>Consultancy Services:</strong></p>
+          <ul>
+            <li>Consultants are independent professionals; AgriFarma facilitates connections but is not liable for their advice</li>
+            <li>Payment terms and cancellation policies are specified at the time of booking</li>
+          </ul>
+          <p><strong>E-commerce:</strong></p>
+          <ul>
+            <li>Product prices, availability, and descriptions are subject to change</li>
+            <li>We reserve the right to refuse or cancel orders</li>
+            <li>Shipping and return policies apply as stated</li>
+          </ul>
+
+          <h2 class="h4 mt-4 mb-3">6. Privacy and Data</h2>
+          <p>
+            Your privacy is important to us. Please review our <a href="{{ url_for('main.privacy') }}">Privacy Policy</a> 
+            to understand how we collect, use, and protect your personal information.
+          </p>
+
+          <h2 class="h4 mt-4 mb-3">7. Disclaimers and Limitations of Liability</h2>
+          <p>
+            AgriFarma is provided "as is" without warranties of any kind. We do not guarantee that our platform will be 
+            error-free, secure, or uninterrupted. To the fullest extent permitted by law, we disclaim liability for any 
+            damages arising from your use of our services.
+          </p>
+
+          <h2 class="h4 mt-4 mb-3">8. Indemnification</h2>
+          <p>
+            You agree to indemnify and hold harmless AgriFarma, its affiliates, and personnel from any claims, damages, 
+            or expenses arising from your use of the platform or violation of these terms.
+          </p>
+
+          <h2 class="h4 mt-4 mb-3">9. Modifications to Terms</h2>
+          <p>
+            We reserve the right to modify these Terms of Use at any time. Changes will be effective immediately upon 
+            posting. Continued use of the platform after changes constitutes acceptance of the modified terms.
+          </p>
+
+          <h2 class="h4 mt-4 mb-3">10. Termination</h2>
+          <p>
+            We may suspend or terminate your access to AgriFarma at our discretion, with or without notice, for violations 
+            of these terms or for any other reason. You may also terminate your account at any time by contacting us.
+          </p>
+
+          <h2 class="h4 mt-4 mb-3">11. Governing Law</h2>
+          <p>
+            These Terms of Use are governed by and construed in accordance with applicable laws. Any disputes shall be 
+            resolved through binding arbitration or in the courts of our jurisdiction.
+          </p>
+
+          <h2 class="h4 mt-4 mb-3">12. Contact Information</h2>
+          <p>
+            If you have questions about these Terms of Use, please contact us at 
+            <a href="mailto:legal@agrifarma.com">legal@agrifarma.com</a> or visit our 
+            <a href="{{ url_for('main.contact') }}">Contact Us</a> page.
+          </p>
+
+          <div class="alert alert-warning mt-4">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <strong>Important:</strong> By using AgriFarma, you acknowledge that you have read and agree to these Terms of Use.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

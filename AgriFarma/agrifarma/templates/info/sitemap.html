@@ -1,0 +1,142 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}Site Map - AgriFarma{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-soft">
+        <div class="card-header">
+          <h1 class="mb-0"><i class="bi bi-diagram-3 me-2"></i>Site Map</h1>
+        </div>
+        <div class="card-body">
+          <p class="lead">
+            Complete overview of all pages and features available on AgriFarma.
+          </p>
+
+          <hr class="hr-light my-4">
+
+          <div class="row g-4">
+            <!-- Main Navigation -->
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h2 class="h5 text-primary mb-3">
+                    <i class="bi bi-house me-2"></i>Main Navigation
+                  </h2>
+                  <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{{ url_for('main.index') }}"><i class="bi bi-chevron-right me-1"></i>Dashboard</a></li>
+                    <li class="mb-2"><a href="{{ url_for('forum.index') }}"><i class="bi bi-chevron-right me-1"></i>Community Forum</a></li>
+                    <li class="mb-2"><a href="{{ url_for('blog.list_posts') }}"><i class="bi bi-chevron-right me-1"></i>Knowledge Base</a></li>
+                    <li class="mb-2"><a href="{{ url_for('consultancy.consultants') }}"><i class="bi bi-chevron-right me-1"></i>Consultancy</a></li>
+                    <li class="mb-2"><a href="{{ url_for('shop.shop_list') }}"><i class="bi bi-chevron-right me-1"></i>Agricultural Shop</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Account & Profile -->
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h2 class="h5 text-primary mb-3">
+                    <i class="bi bi-person me-2"></i>Account & Profile
+                  </h2>
+                  <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{{ url_for('auth.login') }}"><i class="bi bi-chevron-right me-1"></i>Login</a></li>
+                    <li class="mb-2"><a href="{{ url_for('auth.register') }}"><i class="bi bi-chevron-right me-1"></i>Register</a></li>
+                    {% if current_user.is_authenticated %}
+                    <li class="mb-2"><a href="{{ url_for('auth.profile_view', id=current_user.id) }}"><i class="bi bi-chevron-right me-1"></i>My Profile</a></li>
+                    <li class="mb-2"><a href="{{ url_for('auth.profile_edit') }}"><i class="bi bi-chevron-right me-1"></i>Edit Profile</a></li>
+                    <li class="mb-2"><a href="{{ url_for('auth.logout') }}"><i class="bi bi-chevron-right me-1"></i>Logout</a></li>
+                    {% endif %}
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Support & Information -->
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h2 class="h5 text-primary mb-3">
+                    <i class="bi bi-info-circle me-2"></i>Support & Information
+                  </h2>
+                  <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{{ url_for('main.about') }}"><i class="bi bi-chevron-right me-1"></i>About Us</a></li>
+                    <li class="mb-2"><a href="{{ url_for('main.contact') }}"><i class="bi bi-chevron-right me-1"></i>Contact Us</a></li>
+                    <li class="mb-2"><a href="{{ url_for('main.faq') }}"><i class="bi bi-chevron-right me-1"></i>FAQs</a></li>
+                    <li class="mb-2"><a href="{{ url_for('main.team') }}"><i class="bi bi-chevron-right me-1"></i>Our Team</a></li>
+                    <li class="mb-2"><a href="{{ url_for('main.partners') }}"><i class="bi bi-chevron-right me-1"></i>Partners</a></li>
+                    <li class="mb-2"><a href="{{ url_for('main.feedback') }}"><i class="bi bi-chevron-right me-1"></i>Feedback</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            <!-- Legal & Policies -->
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h2 class="h5 text-primary mb-3">
+                    <i class="bi bi-shield-lock me-2"></i>Legal & Policies
+                  </h2>
+                  <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{{ url_for('main.terms') }}"><i class="bi bi-chevron-right me-1"></i>Terms of Use</a></li>
+                    <li class="mb-2"><a href="{{ url_for('main.privacy') }}"><i class="bi bi-chevron-right me-1"></i>Privacy Policy</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+
+            {% if current_user.is_authenticated and current_user.role == 'Admin' %}
+            <!-- Admin Section -->
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h2 class="h5 text-primary mb-3">
+                    <i class="bi bi-shield-check me-2"></i>Administration
+                  </h2>
+                  <ul class="list-unstyled">
+                    <li class="mb-2"><a href="{{ url_for('admin.dashboard') }}"><i class="bi bi-chevron-right me-1"></i>Admin Dashboard</a></li>
+                    <li class="mb-2"><a href="{{ url_for('admin.users') }}"><i class="bi bi-chevron-right me-1"></i>User Management</a></li>
+                    <li class="mb-2"><a href="{{ url_for('admin.moderation') }}"><i class="bi bi-chevron-right me-1"></i>Moderation</a></li>
+                    <li class="mb-2"><a href="{{ url_for('admin.reports') }}"><i class="bi bi-chevron-right me-1"></i>Reports</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            {% endif %}
+
+            <!-- Features Overview -->
+            <div class="col-md-6 col-lg-4">
+              <div class="card h-100">
+                <div class="card-body">
+                  <h2 class="h5 text-primary mb-3">
+                    <i class="bi bi-star me-2"></i>Key Features
+                  </h2>
+                  <ul class="list-unstyled">
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Community Discussions</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Expert Articles</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Professional Consultancy</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Product Marketplace</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>User Profiles</li>
+                    <li class="mb-2"><i class="bi bi-check-circle text-success me-2"></i>Dark Mode</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info mt-4">
+            <i class="bi bi-compass me-2"></i>
+            <strong>Need Help Finding Something?</strong> Use our search feature or 
+            <a href="{{ url_for('main.contact') }}" class="alert-link">contact us</a> for assistance.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

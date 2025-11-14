@@ -1,0 +1,62 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Consultant Profile{% endblock %}
+{% block breadcrumb %}
+  <a href="{{ url_for('main.index') }}" class="af-breadcrumb-home"><i class="bi bi-house-door-fill"></i><span class="visually-hidden">Home</span></a>
+  <i class="bi bi-chevron-right separator" aria-hidden="true"></i>
+  <a href="{{ url_for('consultancy.consultants') }}">Consultants</a>
+  <i class="bi bi-chevron-right separator" aria-hidden="true"></i>
+  <span class="current">Profile</span>
+{% endblock %}
+{% block content %}
+<section class="af-hero af-hero-cover af-overlay-dark" style="background-image:url('{{ url_for('static', filename='img/backgrounds/consultant_bg.jpg') }}');min-height:35vh;display:flex;align-items:end;">
+  <div class="container af-hero-inner py-4">
+    <h1 class="af-hero-title mb-2" style="font-size:clamp(2rem,4vw,2.6rem);">Consultant Profile</h1>
+    <p class="af-hero-subtitle mb-0" style="max-width:680px;">Approved expert available for agricultural guidance and strategy.</p>
+  </div>
+</section>
+<div class="container af-mt-lg">
+  <div class="card" data-elevated="true">
+    <div class="card-body">
+      <h3 class="fw-semibold mb-3 d-flex align-items-center gap-2"><i class="bi bi-person-badge"></i>{{ consultant.user.profile.name if consultant.user and consultant.user.profile and consultant.user.profile.name else 'Consultant' }}</h3>
+      <div class="af-meta mb-4">
+        <span class="af-meta-item"><i class="bi bi-briefcase"></i> {{ consultant.category }}</span>
+        <span class="af-meta-item"><i class="bi bi-bar-chart"></i> {{ consultant.expertise_level }}</span>
+        <span class="af-meta-item"><i class="bi bi-envelope"></i> <a href="mailto:{{ consultant.contact_email }}" class="text-decoration-none">{{ consultant.contact_email }}</a></span>
+        <span class="af-meta-item"><i class="bi bi-check-circle"></i> {{ consultant.approval_status }}</span>
+      </div>
+      {% if consultant.bio %}<p class="mb-4">{{ consultant.bio }}</p>{% endif %}
+      <a href="{{ url_for('consultancy.consultants') }}" class="btn btn-outline-primary btn-sm"><i class="bi bi-arrow-left me-1"></i>Back to Directory</a>
+    </div>
+  </div>
+  
+    {% if current_user.is_authenticated %}
+    <div class="card mt-4" data-elevated="true">
+      <div class="card-body">
+        <h4 class="fw-semibold mb-3"><i class="bi bi-envelope me-2"></i>Send Message</h4>
+        <form method="POST" action="{{ url_for('consultancy.send_message', consultant_id=consultant.id) }}">
+          {{ message_form.csrf_token }}
+          <div class="mb-3">
+            {{ message_form.subject.label(class="form-label") }}
+            {{ message_form.subject(class="form-control" + (" is-invalid" if message_form.subject.errors else "")) }}
+            {% if message_form.subject.errors %}
+              <div class="invalid-feedback">{{ message_form.subject.errors[0] }}</div>
+            {% endif %}
+          </div>
+          <div class="mb-3">
+            {{ message_form.content.label(class="form-label") }}
+            {{ message_form.content(class="form-control" + (" is-invalid" if message_form.content.errors else ""), rows="5") }}
+            {% if message_form.content.errors %}
+              <div class="invalid-feedback">{{ message_form.content.errors[0] }}</div>
+            {% endif %}
+          </div>
+          {{ message_form.submit(class="btn btn-primary") }}
+        </form>
+      </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info mt-4">
+      <i class="bi bi-info-circle me-2"></i>Please <a href="{{ url_for('auth.login') }}">log in</a> to send a message to this consultant.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

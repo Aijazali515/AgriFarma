@@ -1,0 +1,76 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Consultants Directory{% endblock %}
+{% block breadcrumb %}
+  <a href="{{ url_for('main.index') }}" class="af-breadcrumb-home"><i class="bi bi-house-door-fill"></i><span class="visually-hidden">Home</span></a>
+  <i class="bi bi-chevron-right separator" aria-hidden="true"></i>
+  <span class="current">Consultants Directory</span>
+{% endblock %}
+{% block content %}
+<section class="af-hero af-hero-cover af-overlay-dark" style="background-image:url('{{ url_for('static', filename='img/backgrounds/consultant_bg.jpg') }}');min-height:40vh;display:flex;align-items:end;">
+  <div class="container af-hero-inner py-4">
+    <h1 class="af-hero-title mb-2" style="font-size:clamp(2.1rem,4vw,2.8rem);">Consultants Directory</h1>
+    <p class="af-hero-subtitle mb-0" style="max-width:760px;">Find vetted agricultural experts for guidance, diagnostics, and strategic planning.</p>
+  </div>
+</section>
+<div class="container af-mt-lg">
+  <div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center mb-4 gap-3">
+    <form method="get" class="d-flex flex-wrap gap-2" action="{{ url_for('consultancy.consultants') }}">
+      <select name="category" class="form-select" style="min-width:200px;">
+        <option value="">All Categories</option>
+        {% for c in categories %}
+          <option value="{{ c }}" {% if selected_category==c %}selected{% endif %}>{{ c.replace('_',' ').title() }}</option>
+        {% endfor %}
+      </select>
+      <button class="btn btn-outline-primary"><i class="bi bi-filter me-1"></i>Filter</button>
+      {% if selected_category %}
+        <a href="{{ url_for('consultancy.consultants') }}" class="btn btn-link text-decoration-none"><i class="bi bi-x-circle me-1"></i>Clear</a>
+      {% endif %}
+    </form>
+    <div class="text-muted small">{% if consultants %}Showing {{ consultants|length }} result(s){% endif %}</div>
+  </div>
+  {% if consultants %}
+  <div class="row g-4">
+    {% for cons in consultants %}
+      <div class="col-sm-6 col-lg-4">
+        <div class="card h-100" data-elevated="true">
+          <div class="card-body d-flex flex-column">
+            {% if cons.user and cons.user.profile and cons.user.profile.name %}
+              <h5 class="fw-semibold mb-1">{{ cons.user.profile.name }}</h5>
+            {% elif cons.user %}
+              <h5 class="fw-semibold mb-1">{{ cons.user.email }}</h5>
+            {% else %}
+              <h5 class="fw-semibold mb-1">Consultant</h5>
+            {% endif %}
+            <div class="af-meta mb-2">
+              <span class="af-meta-item"><i class="bi bi-briefcase"></i> {{ cons.category.replace('_',' ').title() }}</span>
+              <span class="af-meta-item"><i class="bi bi-bar-chart"></i> {{ cons.expertise_level.title() }}</span>
+            </div>
+            <p class="small mb-2"><i class="bi bi-envelope me-1"></i><a href="mailto:{{ cons.contact_email }}" class="text-decoration-none">{{ cons.contact_email }}</a></p>
+            <p class="text-muted small mt-auto mb-0">Joined {{ cons.created_at.strftime('%b %Y') }}</p>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+  <div class="d-flex justify-content-center mt-4">
+    <nav aria-label="Consultants pages">
+      <ul class="pagination pagination-sm mb-0">
+        {% if pagination and pagination.has_prev %}
+        <li class="page-item"><a class="page-link" href="?page={{ pagination.prev_num }}{% if selected_category %}&category={{ selected_category }}{% endif %}">Prev</a></li>
+        {% endif %}
+        {% if pagination %}
+        {% for pnum in range(1, pagination.pages + 1) %}
+        <li class="page-item {% if pnum==pagination.page %}active{% endif %}"><a class="page-link" href="?page={{ pnum }}{% if selected_category %}&category={{ selected_category }}{% endif %}">{{ pnum }}</a></li>
+        {% endfor %}
+        {% endif %}
+        {% if pagination and pagination.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ pagination.next_num }}{% if selected_category %}&category={{ selected_category }}{% endif %}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </div>
+  {% else %}
+    <div class="alert alert-info"><i class="bi bi-info-circle me-1"></i>No consultants found for this category.</div>
+  {% endif %}
+</div>
+{% endblock %}

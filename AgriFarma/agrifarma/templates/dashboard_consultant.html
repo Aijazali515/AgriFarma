@@ -1,0 +1,27 @@
+{% extends 'layouts/base.html' %}
+{% block title %}Consultant Dashboard{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-lg-8">
+      <h3>Your Assigned Queries</h3>
+      <div class="af-card mb-3">
+        <ul class="list-unstyled">
+          <li class="py-2 border-bottom">Query: "How to manage rice pests" — <small class="text-muted">Farmer: Ahmed</small></li>
+        </ul>
+      </div>
+      <div class="af-card mb-3">
+        <h5>Blog Contributions</h5>
+        <ul><li>Recent article title — <small class="text-muted">Published 2 days ago</small></li></ul>
+      </div>
+    </div>
+    <div class="col-lg-4 af-sidebar">
+      <div class="af-card">
+        <h6>Profile Stats</h6>
+        <div>Answered: <strong>24</strong></div>
+        <div>Rating: <strong>4.6</strong></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}FAQs - AgriFarma{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow-soft">
+        <div class="card-header">
+          <h1 class="mb-0"><i class="bi bi-question-circle me-2"></i>Frequently Asked Questions</h1>
+        </div>
+        <div class="card-body">
+          <p class="lead">Find answers to common questions about AgriFarma services and features.</p>
+
+          <div class="accordion" id="faqAccordion">
+            <!-- General Questions -->
+            <div class="mb-3">
+              <h2 class="h4 text-primary mb-3"><i class="bi bi-info-circle me-2"></i>General Questions</h2>
+              
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq1">
+                  <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse1">
+                    What is AgriFarma?
+                  </button>
+                </h3>
+                <div id="collapse1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    AgriFarma is a comprehensive agricultural platform that connects farmers, provides expert knowledge, 
+                    offers consultancy services, and facilitates the purchase of agricultural products. We aim to empower 
+                    the farming community through technology and collaboration.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq2">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse2">
+                    How do I create an account?
+                  </button>
+                </h3>
+                <div id="collapse2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    Click on the "Sign Up" button in the navigation menu, fill out the registration form with your details, 
+                    and verify your email address. Once verified, you'll have full access to all AgriFarma features.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq3">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse3">
+                    Is AgriFarma free to use?
+                  </button>
+                </h3>
+                <div id="collapse3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    Yes! Basic access to the forum, knowledge base, and browsing consultants and products is completely free. 
+                    Premium consultancy sessions and product purchases have associated fees.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Forum Questions -->
+            <div class="mb-3">
+              <h2 class="h4 text-primary mb-3"><i class="bi bi-chat-dots me-2"></i>Forum & Community</h2>
+              
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq4">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse4">
+                    How do I post a question in the forum?
+                  </button>
+                </h3>
+                <div id="collapse4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    Navigate to the Forum section, select or create an appropriate category, and click "New Thread" or 
+                    "Ask Question". Provide a clear title and detailed description to get the best responses from the community.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq5">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse5">
+                    What are the community guidelines?
+                  </button>
+                </h3>
+                <div id="collapse5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    Be respectful, stay on topic, provide helpful information, avoid spam, and follow our 
+                    <a href="{{ url_for('main.terms') }}">Terms of Use</a>. Moderators review content to maintain quality standards.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Consultancy Questions -->
+            <div class="mb-3">
+              <h2 class="h4 text-primary mb-3"><i class="bi bi-people me-2"></i>Consultancy Services</h2>
+              
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq6">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse6">
+                    How do I book a consultant?
+                  </button>
+                </h3>
+                <div id="collapse6" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    Browse the Consultancy section, view consultant profiles and specializations, and click "Book Consultation" 
+                    on your preferred expert's profile. Follow the booking process to schedule a session.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq7">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse7">
+                    Are consultants verified?
+                  </button>
+                </h3>
+                <div id="collapse7" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    Yes, all consultants go through a verification process where we review their credentials, certifications, 
+                    and experience before approving their profiles on the platform.
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Shopping Questions -->
+            <div class="mb-3">
+              <h2 class="h4 text-primary mb-3"><i class="bi bi-basket me-2"></i>Shopping & Orders</h2>
+              
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq8">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse8">
+                    How do I place an order?
+                  </button>
+                </h3>
+                <div id="collapse8" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    Browse the Shop section, add products to your cart, review your order, and proceed to checkout. 
+                    You'll need to provide shipping information and payment details to complete your purchase.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq9">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse9">
+                    What payment methods do you accept?
+                  </button>
+                </h3>
+                <div id="collapse9" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    We accept major credit cards, debit cards, and secure online payment methods. All transactions are 
+                    encrypted and processed through secure payment gateways.
+                  </div>
+                </div>
+              </div>
+
+              <div class="accordion-item">
+                <h3 class="accordion-header" id="faq10">
+                  <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse10">
+                    What is your return policy?
+                  </button>
+                </h3>
+                <div id="collapse10" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                  <div class="accordion-body">
+                    We offer a 30-day return policy for most products. Items must be unused and in original packaging. 
+                    Please contact our support team to initiate a return request.
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info mt-4">
+            <i class="bi bi-question-circle me-2"></i>
+            <strong>Still have questions?</strong> Feel free to <a href="{{ url_for('main.contact') }}" class="alert-link">contact us</a> 
+            directly, and our support team will be happy to help!
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

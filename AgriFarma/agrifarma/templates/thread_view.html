@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+{% from 'includes/avatar.html' import avatar %}
+{% block content %}
+<section class="container py-4">
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <div class="af-thread-header card mb-3">
+        <div class="card-body">
+          <h1 class="h4 mb-1">{{ thread.title }}</h1>
+          <div class="af-meta"><span class="af-meta-item"><i class="bi bi-person"></i>{{ thread.author.email }}</span><span class="af-meta-item"><i class="bi bi-clock"></i>{{ thread.created_at.strftime('%b %d, %Y') }}</span></div>
+        </div>
+      </div>
+      <div class="card af-posts">
+        <div class="card-body p-0">
+          {% for post in posts %}
+          <div class="af-post border-bottom p-3">
+            <div class="d-flex">
+              <div class="me-3">{{ avatar(post.author, 48) }}</div>
+              <div class="flex-grow-1">
+                <div class="fw-semibold">{{ post.author.profile.name or post.author.email }}</div>
+                <div class="text-muted small">{{ post.created_at.strftime('%b %d, %Y %H:%M') }}</div>
+                <p class="mt-2 mb-0">{{ post.content }}</p>
+                <div class="mt-2">
+                  {% set like_count = post.likes|length %}
+                  {% set user_liked = current_user.is_authenticated and post.likes|selectattr('user_id', 'equalto', current_user.id)|list|length > 0 %}
+                  <form method="POST" action="{{ url_for('forum.toggle_like_post', post_id=post.id) }}" class="d-inline">
+                    <button type="submit" class="btn btn-sm btn-outline-primary border-0" title="{{ 'Unlike' if user_liked else 'Like' }}">
+                      <i class="bi bi-heart{{ '-fill' if user_liked else '' }}"></i> {{ like_count }}
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          <div class="p-3">
+            <h5 class="h6">Reply</h5>
+            {% if current_user.is_authenticated %}
+            <form method="POST">
+              {{ form.hidden_tag() }}
+              <div class="mb-2">{{ form.content(class_='form-control', rows=4) }}{% for e in form.content.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+              <div>{{ form.submit(class_='btn btn-primary btn-sm') }}</div>
+            </form>
+            {% else %}
+            <p class="mb-0">Please <a href="{{ url_for('auth.login') }}">login</a> to reply.</p>
+            {% endif %}
+          </div>
+          {% if move_form %}
+          <div class="p-3 border-top">
+            <h6 class="mb-2">Admin: Move Thread</h6>
+            <form method="POST">
+              {{ move_form.hidden_tag() }}
+              <div class="mb-2">{{ move_form.category_id(class_='form-select') }}{% for e in move_form.category_id.errors %}<div class="text-danger small">{{ e }}</div>{% endfor %}</div>
+              <div>{{ move_form.submit(class_='btn btn-secondary btn-sm') }}</div>
+            </form>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      {% include 'includes/forum_sidebar.html' %}
+    </div>
+  </div>
+</section>
+{% endblock %}

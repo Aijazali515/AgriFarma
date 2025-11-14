@@ -1,0 +1,119 @@
+{% extends 'layouts/base.html' %}
+
+{% block title %}About Us - AgriFarma{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card shadow-soft">
+        <div class="card-header">
+          <h1 class="mb-0"><i class="bi bi-info-circle me-2"></i>About AgriFarma</h1>
+        </div>
+        <div class="card-body">
+          <div class="row align-items-center mb-4">
+            <div class="col-md-8">
+              <h2 class="h3 mb-3">Our Mission</h2>
+              <p class="lead">
+                AgriFarma is dedicated to empowering farmers and agricultural enthusiasts through knowledge sharing, 
+                expert consultancy, and access to quality agricultural products.
+              </p>
+              <p>
+                We believe in building a strong community where farmers can connect, learn, and grow together. 
+                Our platform combines the power of technology with traditional farming wisdom to create sustainable 
+                and profitable agricultural practices.
+              </p>
+            </div>
+            <div class="col-md-4 text-center">
+              <i class="bi bi-flower2 text-primary" style="font-size: 8rem; opacity: 0.2;"></i>
+            </div>
+          </div>
+
+          <hr class="hr-light my-4">
+
+          <h2 class="h3 mb-3">What We Offer</h2>
+          <div class="row g-3 mb-4">
+            <div class="col-md-6">
+              <div class="d-flex align-items-start">
+                <i class="bi bi-chat-dots text-primary me-3" style="font-size: 2rem;"></i>
+                <div>
+                  <h3 class="h5 mb-2">Community Forum</h3>
+                  <p class="text-muted mb-0">
+                    Connect with fellow farmers, ask questions, and share your experiences in our vibrant community.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex align-items-start">
+                <i class="bi bi-journal-text text-primary me-3" style="font-size: 2rem;"></i>
+                <div>
+                  <h3 class="h5 mb-2">Knowledge Base</h3>
+                  <p class="text-muted mb-0">
+                    Access expert articles, tutorials, and guides on various farming techniques and best practices.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex align-items-start">
+                <i class="bi bi-people text-primary me-3" style="font-size: 2rem;"></i>
+                <div>
+                  <h3 class="h5 mb-2">Expert Consultancy</h3>
+                  <p class="text-muted mb-0">
+                    Get personalized advice from certified agricultural consultants to optimize your farming operations.
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="d-flex align-items-start">
+                <i class="bi bi-basket text-primary me-3" style="font-size: 2rem;"></i>
+                <div>
+                  <h3 class="h5 mb-2">Agricultural Shop</h3>
+                  <p class="text-muted mb-0">
+                    Purchase quality seeds, fertilizers, tools, and equipment from trusted suppliers.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <hr class="hr-light my-4">
+
+          <h2 class="h3 mb-3">Our Values</h2>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <div class="text-center p-3">
+                <i class="bi bi-heart-fill text-danger" style="font-size: 2.5rem;"></i>
+                <h4 class="h5 mt-2">Community First</h4>
+                <p class="text-muted small mb-0">We prioritize building strong, supportive farming communities.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-center p-3">
+                <i class="bi bi-graph-up text-success" style="font-size: 2.5rem;"></i>
+                <h4 class="h5 mt-2">Sustainable Growth</h4>
+                <p class="text-muted small mb-0">We promote environmentally responsible farming practices.</p>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="text-center p-3">
+                <i class="bi bi-lightbulb-fill text-warning" style="font-size: 2.5rem;"></i>
+                <h4 class="h5 mt-2">Innovation</h4>
+                <p class="text-muted small mb-0">We embrace technology to improve agricultural outcomes.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="alert alert-info mt-4">
+            <i class="bi bi-info-circle me-2"></i>
+            <strong>Join Us Today!</strong> Become part of the AgriFarma community and take your farming to the next level.
+            <a href="{{ url_for('auth.register') }}" class="alert-link">Create an account</a> to get started.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
